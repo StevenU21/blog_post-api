@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +28,10 @@ class PostController extends Controller
 
     private function manage_image($post, $image)
     {
+        if ($post->image) {
+            Storage::disk('public')->delete($post->image);
+        }
+
         $userPath = Str::slug(auth()->user()->name, '-');
         $imagePath = 'post_images/' . $userPath;
         $imageName = Str::slug($post->title, '-') . '.' . $image->extension();
@@ -51,12 +56,24 @@ class PostController extends Controller
     {
         $post->update($request->validated());
         $image = $post->image;
-        
+
         if ($image) {
-            Storage::disk('public')->delete($post->image);
             $this->manage_image($post, $image);
         }
 
         return new PostResource($post);
+    }
+
+    public function destroy(int $id): JsonResponse
+    {
+        $post = Post::findOrFail($id);
+
+        Storage::disk('public')->delete($post->image);
+
+        $post->delete();
+
+        return response()->json([
+            'message' => 'Post deleted'
+        ], 200);
     }
 }
