@@ -26,7 +26,7 @@ class PostRequest extends FormRequest
             'content' => ['required', 'string', 'min:6', 'max:255'],
             'image' => ['required', 'image', 'mimes:jpg,png,jpeg,webp', 'max:4096'],
             'category_id' => ['required', 'exists:categories,id'],
-            'user_id' => ['required', 'exists:categories,id'],
+            'user_id' => ['exists:categories,id'],
         ];
     }
 }
