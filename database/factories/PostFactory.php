@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Category;
+use App\Models\Label;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -25,5 +27,12 @@ class PostFactory extends Factory
             'category_id' => Category::inRandomOrder()->first()->id,
             'user_id' => User::inRandomOrder()->first()->id
         ];
+    }
+
+    public function withLabels(array $labels): self
+    {
+        return $this->afterCreating(function (Post $post) use ($labels) {
+            $post->labels()->sync($labels);
+        });
     }
 }
