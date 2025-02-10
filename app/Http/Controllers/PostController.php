@@ -28,10 +28,6 @@ class PostController extends Controller
 
     private function manage_image($post, $image)
     {
-        if ($post->image) {
-            Storage::disk('public')->delete($post->image);
-        }
-
         $userPath = Str::slug(auth()->user()->name, '-');
         $imagePath = 'post_images/' . $userPath;
         $imageName = Str::slug($post->title, '-') . '.' . $image->extension();
@@ -58,6 +54,7 @@ class PostController extends Controller
         $image = $post->image;
 
         if ($image) {
+            Storage::disk('public')->delete($post->image);
             $this->manage_image($post, $image);
         }
 
