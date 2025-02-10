@@ -19,7 +19,7 @@ class PostFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->words(3),
+            'title' => fake()->words(3, true),
             'content' => fake()->sentence(6),
             'image' => fake()->imageUrl(),
             'category_id' => Category::inRandomOrder()->first()->id,
