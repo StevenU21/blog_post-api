@@ -10,14 +10,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('post_label', function (Blueprint $table) {
+        Schema::create('label_post', function (Blueprint $table) {
+            $table->integer('label_id')->unsigned();
+            $table->foreign('label_id')->references('id')->on('labels')->onDelete('cascade')->onUpdate('cascade');
+
             $table->integer('post_id')->unsigned();
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade')->onUpdate('cascade');
-
-            $table->integer('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-
-            $table->index(['post_id', 'user_id']);
+            $table->index(['post_id', 'label_id']);
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('post_label');
+        Schema::dropIfExists('label_post');
     }
 };

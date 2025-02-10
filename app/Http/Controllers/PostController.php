@@ -17,7 +17,7 @@ class PostController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $per_page = $request->get('per_page', 10);
-        $posts = Post::with('user', 'category')->latest()->paginate($per_page);
+        $posts = Post::with('user', 'category', 'labels')->latest()->paginate($per_page);
         return PostResource::collection($posts);
     }
 
@@ -42,6 +42,8 @@ class PostController extends Controller
         $post = Post::create($request->validated() + [
             'user_id' => Auth::id()
         ]);
+
+        $post->labels()->attach($request->labels);
 
         $image = $request->image;
         $this->manage_image($post, $image);

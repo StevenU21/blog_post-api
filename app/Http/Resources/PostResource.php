@@ -21,6 +21,12 @@ class PostResource extends JsonResource
             'image' => $this->image_url,
             'category' => $this->category->name,
             'user' => $this->user->name,
+            'labels' => $this->labels->map(function ($label) {
+                return [
+                    'id' => $label->id,
+                    'name' => $label->name
+                ];
+            }),
             'created_at' => $this->created_at->format('d-m-Y')
         ];
     }

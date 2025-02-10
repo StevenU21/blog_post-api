@@ -28,7 +28,7 @@ class PostRequest extends FormRequest
             'category_id' => ['required', 'exists:categories,id'],
             'user_id' => ['exists:users,id'],
             'labels' => ['required', 'array', 'min:1', 'max:5'],
-            'labels.*' => ['required', 'string', 'distinct']
+            'labels.*' => ['required', 'string', 'distinct', 'exists:labels,id']
         ];
     }
 }
