@@ -28,4 +28,9 @@ class Post extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getImageUrlAttribute(): string
+    {
+        return asset('storage/' . $this->image);
+    }
 }
