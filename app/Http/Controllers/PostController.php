@@ -51,6 +51,7 @@ class PostController extends Controller
     {
         $post->update($request->validated());
         $image = $post->image;
+        
         if ($image) {
             Storage::disk('public')->delete($post->image);
             $this->manage_image($post, $image);
