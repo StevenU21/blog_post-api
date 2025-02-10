@@ -33,6 +33,26 @@ class PostController extends Controller
 
         $userPath = Str::slug(auth()->user()->name, '-');
         $imagePath = 'post_images/' . $userPath;
+        $imageName = Str::slug($post->title, '-') . '.' . $request->image->extension();
+        $imageUrl = Storage::disk('public')->putFileAs($imagePath, $request->image, $imageName);
+
+        $post->update([
+            'image' => $imageUrl
+        ]);
+
+        return new PostResource($post);
+    }
+
+    public function update(PostRequest $request, Post $post): PostResource
+    {
+        $post->update($request->validated());
+
+        if ($post->image) {
+            Storage::disk('public')->delete($post->image);
+        }
+
+        $userPath = Str::slug(auth()->user()->name, '-');
+        $imagePath = 'post_images/' . $userPath;
         $imageUrl = Storage::disk('public')->put($imagePath, $request->image);
 
         $post->update([
