@@ -25,4 +25,11 @@ class CategoryController extends Controller
 
         return response()->json($category, 201);
     }
+
+    public function update(CategoryRequest $request, Category $category): JsonResponse
+    {
+        $category->update($request->validated());
+
+        return response()->json($category, 201);
+    }
 }
