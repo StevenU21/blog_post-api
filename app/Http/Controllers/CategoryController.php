@@ -19,17 +19,22 @@ class CategoryController extends Controller
         return CategoryResource::collection($categories);
     }
 
-    public function store(CategoryRequest $request): JsonResponse
+    public function show(Category $category): CategoryResource
+    {
+        return new CategoryResource($category);
+    }
+
+    public function store(CategoryRequest $request): CategoryResource
     {
         $category = Category::create($request->validated());
 
-        return response()->json($category, 201);
+        return new CategoryResource($category);
     }
 
-    public function update(CategoryRequest $request, Category $category): JsonResponse
+    public function update(CategoryRequest $request, Category $category): CategoryResource
     {
         $category->update($request->validated());
 
-        return response()->json($category, 201);
+        return new CategoryResource($category);
     }
 }
