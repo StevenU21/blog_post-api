@@ -15,4 +15,6 @@ class PostController extends Controller
         $posts = Post::latest()->paginate($per_page);
         return PostResource::collection($posts);
     }
+
+    
 }
