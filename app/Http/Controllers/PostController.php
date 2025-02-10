@@ -23,6 +23,7 @@ class PostController extends Controller
 
     public function show(Post $post): PostResource
     {
+        $post->load('user', 'category');
         return new PostResource($post);
     }
 
