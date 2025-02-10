@@ -37,4 +37,11 @@ class CategoryController extends Controller
 
         return new CategoryResource($category);
     }
+
+    public function destroy(int $id): JsonResponse
+    {
+        Category::findOrFail($id)->delete();
+
+        return response()->json(['message' => 'Resource was deleted'], 200);
+    }
 }
