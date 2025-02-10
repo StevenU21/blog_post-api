@@ -31,10 +31,12 @@ class PostController extends Controller
             'user_id' => Auth::id()
         ]);
 
-        $imagePath = Storage::disk('public')->put('post_images', $request->image);
+        $userPath = Str::slug(auth()->user()->name, '-');
+        $imagePath = 'post_images/' . $userPath;
+        $imageUrl = Storage::disk('public')->put($imagePath, $request->image);
 
         $post->update([
-            'image' => $imagePath
+            'image' => $imageUrl
         ]);
 
         return new PostResource($post);
