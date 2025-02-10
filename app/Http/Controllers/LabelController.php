@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LabelRequest;
 use App\Http\Resources\LabelResource;
 use App\Models\Label;
 use Illuminate\Http\Request;
@@ -17,4 +18,15 @@ class LabelController extends Controller
 
         return LabelResource::collection($labels);
     }
+
+    public function show(Label $label): LabelResource
+    {
+        return new LabelResource($label);
+    }
+
+    public function store(LabelRequest $request)
+    {
+        
+    }
 }
+
