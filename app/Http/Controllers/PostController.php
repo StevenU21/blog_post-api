@@ -25,20 +25,24 @@ class PostController extends Controller
         return new PostResource($post);
     }
 
+    private function manage_image($post, $image)
+    {
+        $userPath = Str::slug(auth()->user()->name, '-');
+        $imagePath = 'post_images/' . $userPath;
+        $imageName = Str::slug($post->title, '-') . '.' . $image->extension();
+        $imageUrl = Storage::disk('public')->putFileAs($imagePath, $image, $imageName);
+
+        return $post->update(['image' => $imageUrl]);
+    }
+
     public function store(PostRequest $request): PostResource
     {
         $post = Post::create($request->validated() + [
             'user_id' => Auth::id()
         ]);
 
-        $userPath = Str::slug(auth()->user()->name, '-');
-        $imagePath = 'post_images/' . $userPath;
-        $imageName = Str::slug($post->title, '-') . '.' . $request->image->extension();
-        $imageUrl = Storage::disk('public')->putFileAs($imagePath, $request->image, $imageName);
-
-        $post->update([
-            'image' => $imageUrl
-        ]);
+        $image = $request->image;
+        $this->manage_image($post, $image);
 
         return new PostResource($post);
     }
@@ -46,18 +50,11 @@ class PostController extends Controller
     public function update(PostRequest $request, Post $post): PostResource
     {
         $post->update($request->validated());
-
-        if ($post->image) {
+        $image = $post->image;
+        if ($image) {
             Storage::disk('public')->delete($post->image);
+            $this->manage_image($post, $image);
         }
-
-        $userPath = Str::slug(auth()->user()->name, '-');
-        $imagePath = 'post_images/' . $userPath;
-        $imageUrl = Storage::disk('public')->put($imagePath, $request->image);
-
-        $post->update([
-            'image' => $imageUrl
-        ]);
 
         return new PostResource($post);
     }
