@@ -43,7 +43,7 @@ class PostController extends Controller
             'user_id' => Auth::id()
         ]);
 
-        $post->labels()->attach($request->labels);
+        $post->labels()->sync($request->labels);
 
         $image = $request->image;
         $this->manage_image($post, $image);
@@ -54,6 +54,7 @@ class PostController extends Controller
     public function update(PostRequest $request, Post $post): PostResource
     {
         $post->update($request->validated());
+        $post->labels()->sync($request->labels);
         $image = $post->image;
 
         if ($image) {
