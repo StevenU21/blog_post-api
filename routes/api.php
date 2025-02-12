@@ -19,8 +19,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('labels', LabelController::class);
     Route::apiResource('posts', PostController::class);
 
-    Route::get('/comments', [CommentController::class, 'index'])->name('comments');
-    Route::get('/post/{post}/comments', [CommentController::class, 'post_comments'])->name('post.comments');
-    Route::post('/post/{post}/comment', [CommentController::class, 'store'])->name('post.store.comment');
+    Route::prefix('/comments')->name('comments.')->group(function () {
+        Route::get('/', [CommentController::class, 'index'])->name('index');
+        Route::get('/post/{post}', [CommentController::class, 'post_comments'])->name('post');
+        Route::post('/post/{post}', [CommentController::class, 'store'])->name('post.store');
+        Route::put('/post/{comment}', [CommentController::class, 'update'])->name('update');
+    });
 });
 
