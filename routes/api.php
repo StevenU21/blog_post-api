@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
@@ -17,5 +18,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('labels', LabelController::class);
     Route::apiResource('posts', PostController::class);
+
+    Route::get('/comments', [CommentController::class, 'index'])->name('comments');
+    Route::get('/post/{post}/comments', [CommentController::class, 'post_comments'])->name('post.comments');
 });
 
