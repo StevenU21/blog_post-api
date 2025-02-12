@@ -16,7 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::apiResource('categories', CategoryController::class);
-    Route::get('/labels/{label}', [LabelController::class, 'label_posts'])->name('labels.post');
+    Route::get('/labels/{label}/posts', [LabelController::class, 'label_posts'])->name('labels.post');
     Route::apiResource('labels', LabelController::class);
     Route::apiResource('posts', PostController::class);
 
