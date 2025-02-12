@@ -12,14 +12,13 @@ class CommentController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        $comments = Comment::latest()->paginate();
+        $comments = Comment::with('user', 'post')->latest()->paginate();
         return CommentResource::collection($comments);
     }
 
-    public function post_comments(Post $post): CommentResource
+    public function post_comments(int $id): AnonymousResourceCollection
     {
-        $comments = $post->comment->get();
-
-        return new CommentResource($comments);
+        $comments = Comment::where('post_id', '=', $id)->with('user', 'post')->latest()->get();
+        return CommentResource::collection($comments);
     }
 }
