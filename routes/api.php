@@ -23,7 +23,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [CommentController::class, 'index'])->name('index');
         Route::get('/post/{post}', [CommentController::class, 'post_comments'])->name('post');
         Route::post('/post/{post}', [CommentController::class, 'store'])->name('post.store');
-        Route::put('/post/{comment}', [CommentController::class, 'update'])->name('update');
+        Route::put('/{comment}', [CommentController::class, 'update'])->name('update');
+        Route::delete('/{comment}', [CommentController::class, 'destroy'])->name('destroy');
     });
 });
 

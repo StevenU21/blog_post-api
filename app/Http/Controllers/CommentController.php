@@ -6,6 +6,7 @@ use App\Http\Requests\CommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Models\Post;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
@@ -42,4 +43,12 @@ class CommentController extends Controller
 
         return new CommentResource($comment);
     }
+
+    public function destroy(int $commentId): JsonResponse
+    {
+        $comment = Comment::findOrFail($commentId);
+        $comment->delete();
+        return response()->json(['message' => 'Resource Deleted'], 200);
+    }
 }
+    
