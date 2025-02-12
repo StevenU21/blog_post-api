@@ -28,7 +28,6 @@ class DatabaseSeeder extends Seeder
         Category::factory(50)->create();
         Label::factory(10)->create();
 
-        // Crear posts y asignarles etiquetas aleatorias
         Post::factory()->count(100)->create()->each(function (Post $post)
         {
             $labels = Label::inRandomOrder()->take(rand(1, 5))->pluck('id')->toArray();
