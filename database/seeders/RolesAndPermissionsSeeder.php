@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -13,10 +14,24 @@ class RolesAndPermissionsSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            'read category', 'create category', 'update category', 'destroy category',
-            'read labels', 'create labels', 'update labels', 'destroy labels',
-            'read posts', 'create posts', 'update posts', 'destroy posts',
-            'read comments', 'create comments', 'update comments', 'destroy comments'
+            'categories' => ['read category', 'create category', 'update category', 'destroy category'],
+            'labels' => ['read labels', 'create labels', 'update labels', 'destroy labels'],
+            'posts' => ['read posts', 'create posts', 'update posts', 'destroy posts'],
+            'comments' => ['read comments', 'create comments', 'update comments', 'destroy comments'],
+            'roles' => ['assing role'],
+            'permissions' => ['assign permissions', 'revoke permissions']
         ];
+
+        foreach ($permissions as $resource => $perms) {
+            foreach ($perms as $perm) {
+                Permission::firstOrCreate(['name' => $perm]);
+            }
+        }
+
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        $writerRole = Role::firstOrCreate(['name' => 'writer']);
+        $readerRole = Role::firstOrCreate(['name' => 'reader']);
+
+        $adminRole->givePermissionTo($permissions);
     }
 }

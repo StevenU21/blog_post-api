@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(RolesAndPermissionsSeeder::class);
+        
         User::factory(10)->create();
 
         User::factory()->create([
@@ -28,8 +30,7 @@ class DatabaseSeeder extends Seeder
         Category::factory(50)->create();
         Label::factory(10)->create();
 
-        Post::factory()->count(100)->create()->each(function (Post $post)
-        {
+        Post::factory()->count(100)->create()->each(function (Post $post) {
             $labels = Label::inRandomOrder()->take(rand(1, 5))->pluck('id')->toArray();
             $post->labels()->sync($labels);
         });
