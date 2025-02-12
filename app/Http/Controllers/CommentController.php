@@ -18,17 +18,17 @@ class CommentController extends Controller
         return CommentResource::collection($comments);
     }
 
-    public function post_comments(int $id): AnonymousResourceCollection
+    public function post_comments(int $commentId): AnonymousResourceCollection
     {
-        $comments = Comment::where('post_id', '=', $id)->with('user', 'post')->latest()->get();
+        $comments = Comment::where('post_id', '=', $commentId)->with('user', 'post')->latest()->get();
         return CommentResource::collection($comments);
     }
 
-    public function store(CommentRequest $request, Post $post): CommentResource
+    public function store(CommentRequest $request, int $postId): CommentResource
     {
         $comment = Comment::create($request->validated() + [
-            'post_id' => $post,
-            'user_id' => Auth::id()
+            'user_id' => Auth::id(),
+            'post_id' => $postId,
         ]);
 
         return new CommentResource($comment);
