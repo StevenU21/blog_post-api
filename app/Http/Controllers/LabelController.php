@@ -24,7 +24,7 @@ class LabelController extends Controller
 
     public function label_posts(int $labelId): AnonymousResourceCollection
     {
-        $label_posts = Post::whereHas('labels', function($query, $labelId){
+        $label_posts = Post::whereHas('labels', function ($query) use ($labelId) {
             $query->where('label_id', $labelId);
         })->latest()->get();
 
@@ -48,7 +48,7 @@ class LabelController extends Controller
         return new LabelResource($label);
     }
 
-    public function destroy (int $id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         Label::findOrFail($id)->delete();
         return response()->json(['message' => 'Resource was deleted'], 200);
