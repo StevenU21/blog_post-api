@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LabelRequest;
 use App\Http\Resources\LabelResource;
+use App\Http\Resources\PostResource;
 use App\Models\Label;
+use App\Models\Post;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -18,6 +20,15 @@ class LabelController extends Controller
         $labels = Label::latest()->paginate($per_page);
 
         return LabelResource::collection($labels);
+    }
+
+    public function label_posts(int $labelId): AnonymousResourceCollection
+    {
+        $label_posts = Post::whereHas('labels', function($query, $labelId){
+            $query->where('label_id', $labelId);
+        })->latest()->get();
+
+        return PostResource::collection($label_posts);
     }
 
     public function show(Label $label): LabelResource
