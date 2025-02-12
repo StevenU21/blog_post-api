@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
+use App\Models\Comment;
 use App\Models\Label;
 use App\Models\Post;
 use App\Models\User;
@@ -33,5 +34,7 @@ class DatabaseSeeder extends Seeder
             $labels = Label::inRandomOrder()->take(rand(1, 5))->pluck('id')->toArray();
             $post->labels()->sync($labels);
         });
+
+        Comment::factory(100)->create();
     }
 }
