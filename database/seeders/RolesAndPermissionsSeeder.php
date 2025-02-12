@@ -8,30 +8,47 @@ use Spatie\Permission\Models\Role;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
+    const PERMISSIONS = [
+        'categories' => ['read category', 'create category', 'update category', 'destroy category'],
+        'labels' => ['read labels', 'create labels', 'update labels', 'destroy labels'],
+        'posts' => ['read posts', 'create posts', 'update posts', 'destroy posts'],
+        'comments' => ['read comments', 'create comments', 'update comments', 'destroy comments'],
+        'roles' => ['assign role'],
+        'permissions' => ['assign permissions', 'revoke permissions']
+    ];
+
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $permissions = [
-            'categories' => ['read category', 'create category', 'update category', 'destroy category'],
-            'labels' => ['read labels', 'create labels', 'update labels', 'destroy labels'],
-            'posts' => ['read posts', 'create posts', 'update posts', 'destroy posts'],
-            'comments' => ['read comments', 'create comments', 'update comments', 'destroy comments'],
-            'roles' => ['assing role'],
-            'permissions' => ['assign permissions', 'revoke permissions']
-        ];
+        $this->createPermissions();
+        $this->assignPermissionsToRoles();
+    }
 
-        foreach ($permissions as $resource => $perms) {
+    protected function createPermissions()
+    {
+        foreach (self::PERMISSIONS as $resource => $perms) {
             foreach ($perms as $perm) {
                 Permission::firstOrCreate(['name' => $perm]);
             }
         }
+    }
 
+    protected function assignPermissionsToRoles()
+    {
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $writerRole = Role::firstOrCreate(['name' => 'writer']);
         $readerRole = Role::firstOrCreate(['name' => 'reader']);
 
-        $adminRole->givePermissionTo($permissions);
+        $adminRole->givePermissionTo(Permission::all());
+
+        $writerPermission = array_merge([
+            self::PERMISSIONS['categories'],
+            self::PERMISSIONS['labels'],
+            self::PERMISSIONS['posts']
+        ]);
+
+        $writerRole->givePermissionTo($writerPermission);
     }
 }
