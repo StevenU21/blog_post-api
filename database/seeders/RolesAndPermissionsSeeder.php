@@ -43,8 +43,12 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $adminRole->givePermissionTo(Permission::all());
 
+        $categoryFilter = array_filter(self::PERMISSIONS['categories'], function ($perm) {
+            return $perm !== 'create category';
+        });
+
         $writerPermission = array_merge([
-            self::PERMISSIONS['categories'],
+            $categoryFilter,
             self::PERMISSIONS['labels'],
             self::PERMISSIONS['posts']
         ]);
