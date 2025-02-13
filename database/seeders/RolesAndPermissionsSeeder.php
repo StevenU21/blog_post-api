@@ -27,7 +27,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->assignPermissionsToRoles();
     }
 
-    protected function createPermissions()
+    protected function createPermissions(): void
     {
         foreach (self::PERMISSIONS as $resource => $perms) {
             foreach ($perms as $perm) {
@@ -36,11 +36,14 @@ class RolesAndPermissionsSeeder extends Seeder
         }
     }
 
-    protected function filterWriterPermission($permission): mixed
+    protected function filterPermissions($permission, $remove = []): array
     {
-        $filtered = array_filter(self::PERMISSIONS[$permission], function ($perm) use ($permission) {
-            $permissionName = Str::singular($permission);
-            $remove = ['destroy ' . $permissionName, 'update ' . $permissionName];
+        $permissionName = Str::singular($permission);
+        if (empty($remove)) {
+            $remove = ['destroy ' . $permissionName, 'update ' . $permissionName, 'create ' . $permissionName, 'read ' . $permissionName];
+        }
+
+        $filtered = array_filter(self::PERMISSIONS[$permission], function ($perm) use ($remove) {
             return !in_array($perm, $remove);
         });
 
@@ -55,22 +58,13 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $adminRole->givePermissionTo(Permission::all());
 
-        $categoryFilter = array_filter(self::PERMISSIONS['categories'], function ($perm) {
-            $remove = ['create category', 'update category', 'destroy category'];
-            return !in_array($perm, $remove);
-        });
-
-        $labelFilter = array_filter(self::PERMISSIONS['labels'], function ($perm) {
-            $remove = ['update label', 'destroy label'];
-            return !in_array($perm, $remove);
-        });
-
-        $writerPermission = array_merge([
-            $this->filterWriterPermission('categories'),
-            // $categoryFilter,
-            $labelFilter,
-            self::PERMISSIONS['posts']
-        ]);
+        $writerPermission = array_merge(
+            ...[
+                $this->filterPermissions('categories', ['create category', 'update category', 'destroy category']),
+                $this->filterPermissions('labels', ['destroy category']),
+                $this->filterPermissions('posts')
+            ]
+        );
 
         $writerRole->givePermissionTo($writerPermission);
     }
