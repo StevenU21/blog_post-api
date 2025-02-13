@@ -42,7 +42,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $adminRole->givePermissionTo(Permission::all());
 
         $writerPermissions = array_merge(
-            $this->filterPermissions('categories')->only(['read categories'])->get(),
+            ...$this->filterPermissions('categories')->only(['read categories'])->get(),
             $this->filterPermissions('labels')->remove(['destroy labels'])->get(),
             $this->filterPermissions('posts')->get()
         );
@@ -50,7 +50,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $writerRole->givePermissionTo($writerPermissions);
 
         $readerPermissions = array_merge(
-            $this->filterPermissions('categories')->only(['read categories'])->get(),
+            ...$this->filterPermissions('categories')->only(['read categories'])->get(),
             $this->filterPermissions('labels')->only(['read labels'])->get(),
             $this->filterPermissions('posts')->only(['read posts'])->get(),
             $this->filterPermissions('comments')->get()
