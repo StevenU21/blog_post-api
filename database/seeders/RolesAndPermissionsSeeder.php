@@ -38,11 +38,6 @@ class RolesAndPermissionsSeeder extends Seeder
 
     protected function filterPermissions($permission, $remove = []): array
     {
-        $permissionName = Str::singular($permission);
-        if (empty($remove)) {
-            $remove = ['destroy ' . $permissionName, 'update ' . $permissionName, 'create ' . $permissionName, 'read ' . $permissionName];
-        }
-
         $filtered = array_filter(self::PERMISSIONS[$permission], function ($perm) use ($remove) {
             return !in_array($perm, $remove);
         });
@@ -61,7 +56,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $writerPermission = array_merge(
             ...[
                 $this->filterPermissions('categories', ['create category', 'update category', 'destroy category']),
-                $this->filterPermissions('labels', ['destroy category']),
+                $this->filterPermissions('labels', ['destroy labels']),
                 $this->filterPermissions('posts')
             ]
         );
