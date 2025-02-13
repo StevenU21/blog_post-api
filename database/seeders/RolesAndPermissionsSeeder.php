@@ -2,30 +2,21 @@
 
 namespace Database\Seeders;
 
+use App\PermissionFilter;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
     const PERMISSIONS = [
-        'categories' => ['read category', 'create category', 'update category', 'destroy category'],
+        'categories' => ['read categories', 'create categories', 'update categories', 'destroy categories'],
         'labels' => ['read labels', 'create labels', 'update labels', 'destroy labels'],
         'posts' => ['read posts', 'create posts', 'update posts', 'destroy posts'],
         'comments' => ['read comments', 'create comments', 'update comments', 'destroy comments'],
         'roles' => ['assign role', 'read roles'],
         'permissions' => ['assign permissions', 'revoke permissions']
     ];
-
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
-    {
-        $this->createPermissions();
-        $this->assignPermissionsToRoles();
-    }
 
     protected function createPermissions(): void
     {
@@ -36,16 +27,12 @@ class RolesAndPermissionsSeeder extends Seeder
         }
     }
 
-    protected function filterPermissions($permission, $remove = []): array
+    protected function filterPermissions($permission): PermissionFilter
     {
-        $filtered = array_filter(self::PERMISSIONS[$permission], function ($perm) use ($remove) {
-            return !in_array($perm, $remove);
-        });
-
-        return $filtered;
+        return new PermissionFilter(self::PERMISSIONS[$permission]);
     }
 
-    protected function assignPermissionsToRoles()
+    protected function assignPermissionsToRoles(): void
     {
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $writerRole = Role::firstOrCreate(['name' => 'writer']);
@@ -53,14 +40,30 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $adminRole->givePermissionTo(Permission::all());
 
-        $writerPermission = array_merge(
-            ...[
-                $this->filterPermissions('categories', ['create category', 'update category', 'destroy category']),
-                $this->filterPermissions('labels', ['destroy labels']),
-                $this->filterPermissions('posts')
-            ]
+        $writerPermissions = array_merge(
+            $this->filterPermissions('categories')->only(['read categories'])->get(),
+            $this->filterPermissions('labels')->remove(['destroy labels'])->get(),
+            $this->filterPermissions('posts')->get()
         );
 
-        $writerRole->givePermissionTo($writerPermission);
+        $writerRole->givePermissionTo($writerPermissions);
+
+        $readerPermissions = array_merge(
+            $this->filterPermissions('categories')->only(['read categories'])->get(),
+            $this->filterPermissions('labels')->only(['read labels'])->get(),
+            $this->filterPermissions('posts')->only(['read posts'])->get(),
+            $this->filterPermissions('comments')->get()
+        );
+
+        $readerRole->givePermissionTo($readerPermissions);
+    }
+
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $this->createPermissions();
+        $this->assignPermissionsToRoles();
     }
 }
