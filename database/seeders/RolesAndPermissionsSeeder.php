@@ -16,7 +16,7 @@ class RolesAndPermissionsSeeder extends Seeder
         'posts' => ['read posts', 'create posts', 'update posts', 'destroy posts'],
         'comments' => ['read comments', 'create comments', 'update comments', 'destroy comments'],
         'roles' => ['assign role', 'read roles'],
-        'permissions' => ['assign permissions', 'revoke permissions']
+        'permissions' => ['read permissions','assign permissions', 'revoke permissions']
     ];
 
     protected function createPermissions(): void
@@ -44,7 +44,8 @@ class RolesAndPermissionsSeeder extends Seeder
         $writerPermissions = array_merge(
             ...$this->filterPermissions('categories')->only(['read categories'])->get(),
             $this->filterPermissions('labels')->remove(['destroy labels'])->get(),
-            $this->filterPermissions('posts')->get()
+            $this->filterPermissions('posts')->get(),
+            $this->filterPermissions('comments')->get()
         );
 
         $writerRole->givePermissionTo($writerPermissions);
