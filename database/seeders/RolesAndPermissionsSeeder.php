@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\PermissionFilter;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -63,7 +64,9 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->createPermissions();
-        $this->assignPermissionsToRoles();
+        DB::transaction(function () {
+            $this->createPermissions();
+            $this->assignPermissionsToRoles();
+        });
     }
 }
