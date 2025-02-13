@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -13,7 +14,7 @@ class RolesAndPermissionsSeeder extends Seeder
         'labels' => ['read labels', 'create labels', 'update labels', 'destroy labels'],
         'posts' => ['read posts', 'create posts', 'update posts', 'destroy posts'],
         'comments' => ['read comments', 'create comments', 'update comments', 'destroy comments'],
-        'roles' => ['assign role'],
+        'roles' => ['assign role', 'read roles'],
         'permissions' => ['assign permissions', 'revoke permissions']
     ];
 
@@ -35,6 +36,17 @@ class RolesAndPermissionsSeeder extends Seeder
         }
     }
 
+    protected function filterWriterPermission($permission): mixed
+    {
+        $filtered = array_filter(self::PERMISSIONS[$permission], function ($perm) use ($permission) {
+            $permissionName = Str::singular($permission);
+            $remove = ['destroy ' . $permissionName, 'update ' . $permissionName];
+            return !in_array($perm, $remove);
+        });
+
+        return $filtered;
+    }
+
     protected function assignPermissionsToRoles()
     {
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
@@ -44,12 +56,19 @@ class RolesAndPermissionsSeeder extends Seeder
         $adminRole->givePermissionTo(Permission::all());
 
         $categoryFilter = array_filter(self::PERMISSIONS['categories'], function ($perm) {
-            return $perm !== 'create category';
+            $remove = ['create category', 'update category', 'destroy category'];
+            return !in_array($perm, $remove);
+        });
+
+        $labelFilter = array_filter(self::PERMISSIONS['labels'], function ($perm) {
+            $remove = ['update label', 'destroy label'];
+            return !in_array($perm, $remove);
         });
 
         $writerPermission = array_merge([
-            $categoryFilter,
-            self::PERMISSIONS['labels'],
+            $this->filterWriterPermission('categories'),
+            // $categoryFilter,
+            $labelFilter,
             self::PERMISSIONS['posts']
         ]);
 
