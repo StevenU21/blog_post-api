@@ -58,6 +58,8 @@ class RolesAndPermissionsSeeder extends Seeder
         );
 
         $readerRole->givePermissionTo($readerPermissions);
+
+
     }
 
     /**
