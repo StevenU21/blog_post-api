@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -26,6 +28,17 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/post/{post}', [CommentController::class, 'store'])->name('post.store');
         Route::put('/{comment}', [CommentController::class, 'update'])->name('update');
         Route::delete('/{comment}', [CommentController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::middleware('role:admin')->prefix('/admin')->name('admin.')->group(function () {
+        // Role routes
+        Route::get('/roles', [RoleController::class, 'index'])->name('index');
+        // Route::put('/roles/{user}/assign-role', [RoleController::class, 'assignRole'])->name('assign-role');
+        // // Permission routes
+        // Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
+        // Route::get('/permissions/{user}/list-permission', [PermissionController::class, 'getUserPermissions'])->name('permissions.list-permission');
+        // Route::post('/permissions/{user}/give-permission', [PermissionController::class, 'assignPermission'])->name('permissions.give-permission');
+        // Route::delete('/permissions/{user}/revoke-permission', [PermissionController::class, 'revokePermission'])->name('permissions.revoke-permission');
     });
 });
 
