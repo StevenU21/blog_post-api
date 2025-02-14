@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\LabelRequest;
 use App\Http\Resources\LabelResource;
 use App\Http\Resources\PostResource;
