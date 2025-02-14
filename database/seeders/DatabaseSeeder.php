@@ -19,7 +19,19 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RolesAndPermissionsSeeder::class);
 
-        User::factory(10)->create();
+        $writerUsers = User::factory(10)->create();
+
+        foreach ($writerUsers as $user) {
+            $user->assignRole('writer');
+        }
+
+        $readerUser = User::factory()->create([
+            'name' => 'Reader User',
+            'email' => 'reader@example.com',
+            'password' => bcrypt('password')
+        ]);
+        $readerUser->assignRole('reader');
+
 
         $adminUser = User::factory()->create([
             'name' => 'Admin User',
