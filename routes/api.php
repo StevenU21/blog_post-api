@@ -2,9 +2,9 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\LabelController;
+use App\Http\Controllers\Admin\LabelController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
