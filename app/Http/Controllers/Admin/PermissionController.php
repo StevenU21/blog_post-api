@@ -17,7 +17,7 @@ class PermissionController extends Controller
     {
         $this->authorize('viewAny', Permission::class);
 
-        $permissions = Permission::pluck('name', 'id');
+        $permissions = Permission::orderBy('id', 'asc')->pluck('name', 'id');
 
         return response()->json($permissions);
     }

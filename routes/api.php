@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Admin\LabelController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [RegisterController::class, 'register'])->name('register');
@@ -30,15 +31,17 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{comment}', [CommentController::class, 'destroy'])->name('destroy');
     });
 
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+
     Route::middleware('role:admin')->prefix('/admin')->name('admin.')->group(function () {
         // Role routes
         Route::get('/roles', [RoleController::class, 'index'])->name('index');
-        // Route::put('/roles/{user}/assign-role', [RoleController::class, 'assignRole'])->name('assign-role');
-        // // Permission routes
-        // Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
-        // Route::get('/permissions/{user}/list-permission', [PermissionController::class, 'getUserPermissions'])->name('permissions.list-permission');
-        // Route::post('/permissions/{user}/give-permission', [PermissionController::class, 'assignPermission'])->name('permissions.give-permission');
-        // Route::delete('/permissions/{user}/revoke-permission', [PermissionController::class, 'revokePermission'])->name('permissions.revoke-permission');
+        Route::put('/roles/{user}/assign-role', [RoleController::class, 'assignRole'])->name('assign-role');
+        // Permission routes
+        Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
+        Route::get('/permissions/{user}/list-permission', [PermissionController::class, 'getUserPermissions'])->name('permissions.list-permission');
+        Route::post('/permissions/{user}/give-permission', [PermissionController::class, 'assignPermission'])->name('permissions.give-permission');
+        Route::delete('/permissions/{user}/revoke-permission', [PermissionController::class, 'revokePermission'])->name('permissions.revoke-permission');
     });
 });
 

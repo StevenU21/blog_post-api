@@ -18,7 +18,7 @@ class RoleController extends Controller
     {
         $this->authorize('viewAny', Role::class);
 
-        $roles = Role::pluck('name', 'id');
+        $roles = Role::orderBy('id', 'asc')->pluck('name', 'id');
 
         return response()->json($roles);
     }
