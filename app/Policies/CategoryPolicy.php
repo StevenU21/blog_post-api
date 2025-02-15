@@ -4,8 +4,8 @@ namespace App\Policies;
 
 use App\Models\Category;
 use App\Models\User;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 
 class CategoryPolicy
 {
@@ -18,18 +18,18 @@ class CategoryPolicy
         }
     }
 
-    public function viewAny(Category $category): bool
+    public function viewAny(User $user): bool
     {
-        if (!$category->hasPermissionTo('read categories')) {
-            throw new AuthorizationException();
+        if (!$user->hasPermissionTo('read categories')) {
+            throw new UnauthorizedException(403);
         }
         return true;
     }
 
-    public function view(Category $category)
+    public function view(User $user, Category $category)
     {
-        if ($category->hasPermissionTo('read categories')) {
-            throw new AuthorizationException();
+        if (!$user->hasPermissionTo('read categories')) {
+            throw new UnauthorizedException(403);
         }
         return true;
     }
@@ -37,23 +37,23 @@ class CategoryPolicy
     public function create(User $user)
     {
         if (!$user->hasPermissionTo('create categories')) {
-            throw new AuthorizationException();
+            throw new UnauthorizedException(403);
         }
         return true;
     }
 
-    public function update(User $user)
+    public function update(User $user, Category $category)
     {
         if (!$user->hasPermissionTo('update categories')) {
-            throw new AuthorizationException();
+            throw new UnauthorizedException(403);
         }
         return true;
     }
 
-    public function delete(User $user)
+    public function delete(User $user, Category $category)
     {
         if (!$user->hasPermissionTo('destroy categories')) {
-            throw new AuthorizationException();
+            throw new UnauthorizedException(403);
         }
         return true;
     }
