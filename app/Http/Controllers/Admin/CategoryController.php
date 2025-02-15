@@ -14,6 +14,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class CategoryController extends Controller
 {
     use AuthorizesRequests;
+
     public function index(Request $request): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Category::class);
@@ -27,6 +28,7 @@ class CategoryController extends Controller
     public function show(Category $category): CategoryResource
     {
         $this->authorize('view', $category);
+
         return new CategoryResource($category);
     }
 
@@ -42,6 +44,7 @@ class CategoryController extends Controller
     public function update(CategoryRequest $request, Category $category): CategoryResource
     {
         $this->authorize('update', $category);
+        
         $category->update($request->validated());
 
         return new CategoryResource($category);
