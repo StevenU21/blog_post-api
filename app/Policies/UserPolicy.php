@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Classes\ValidatePolicy;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -9,6 +10,13 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class UserPolicy
 {
     use HandlesAuthorization;
+
+    protected ValidatePolicy $validatePolicy;
+
+    public function __construct(ValidatePolicy $validatePolicy)
+    {
+        $this->validatePolicy = $validatePolicy;
+    }
 
     public function before(User $user, $ability)
     {
@@ -19,17 +27,11 @@ class UserPolicy
 
     public function viewAny(User $user): bool
     {
-        if (!$user->hasPermissionTo('read users')) {
-            throw new AuthorizationException();
-        }
-        return true;
+        return $this->validatePolicy->handle($user, 'read users');
     }
 
     public function view(User $user): bool
     {
-        if (!$user->hasPermissionTo('read users')) {
-            throw new AuthorizationException();
-        }
-        return true;
+        return $this->validatePolicy->handle($user, 'read users');
     }
 }
