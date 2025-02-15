@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\PermissionFilter;
+use App\Classes\PermissionFilter;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;

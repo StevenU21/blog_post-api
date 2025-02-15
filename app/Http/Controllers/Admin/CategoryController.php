@@ -11,7 +11,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-
 class CategoryController extends Controller
 {
     use AuthorizesRequests;
