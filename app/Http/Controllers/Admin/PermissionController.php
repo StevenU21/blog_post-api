@@ -46,7 +46,6 @@ class PermissionController extends Controller
 
         $permissions = $request->input('permission');
 
-        // Assign the new permissions
         $user->givePermissionTo($permissions);
 
         return response()->json(
