@@ -48,6 +48,6 @@ class LabelPolicy
 
     public function destroy(User $user, Label $label): bool
     {
-        return $this->validatePolicy->handle($user, 'update labels');
+        return $this->validatePolicy->handle($user, 'destroy labels');
     }
 }
