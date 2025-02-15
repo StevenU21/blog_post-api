@@ -47,10 +47,10 @@ class CategoryController extends Controller
         return new CategoryResource($category);
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(Category $category): JsonResponse
     {
-        $category = Category::findOrFail($id);
-        $this->authorize('delete', $category);
+        $this->authorize('destroy', $category);
+
         $category->delete();
 
         return response()->json(['message' => 'Resource was deleted'], 200);

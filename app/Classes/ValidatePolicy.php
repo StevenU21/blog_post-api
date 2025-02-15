@@ -2,16 +2,19 @@
 
 namespace App\Classes;
 
+use App\Models\User;
+use Spatie\Permission\Exceptions\UnauthorizedException;
+
 class ValidatePolicy
 {
-    private $user;
-    private $permission;
     /**
-     * Create a new class instance.
+     * Handle the permission validation.
      */
-    public function __construct($user, $permission)
+    public function handle(User $user, string $permission): bool
     {
-        $this->user = $user;
-        $this->permission = $permission;
+        if (!$user->hasPermissionTo($permission)) {
+            return throw new UnauthorizedException(403);
+        }
+        return true;
     }
 }

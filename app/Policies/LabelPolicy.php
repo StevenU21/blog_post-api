@@ -17,22 +17,4 @@ class LabelPolicy
             return true;
         }
     }
-
-    protected function validate($user, $permission)
-    {
-        if (!$user->hasPermissionTo($permission)) {
-            return throw new UnauthorizedException(403);
-        }
-    }
-
-    public function ViewAny(User $user)
-    {
-        $this->validate($user, 'read labels');
-        return true;
-    }
-
-    public function View(User $user, Label $label)
-    {
-
-    }
 }

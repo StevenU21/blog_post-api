@@ -2,14 +2,21 @@
 
 namespace App\Policies;
 
+use App\Classes\ValidatePolicy;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Spatie\Permission\Exceptions\UnauthorizedException;
 
 class CategoryPolicy
 {
     use HandlesAuthorization;
+
+    protected ValidatePolicy $validatePolicy;
+
+    public function __construct(ValidatePolicy $validatePolicy)
+    {
+        $this->validatePolicy = $validatePolicy;
+    }
 
     public function before(User $user, $ability)
     {
@@ -18,43 +25,28 @@ class CategoryPolicy
         }
     }
 
-    public function viewAny(User $user): bool
+    public function viewAny(User $user)
     {
-        if (!$user->hasPermissionTo('read categories')) {
-            throw new UnauthorizedException(403);
-        }
-        return true;
+        return $this->validatePolicy->handle($user, 'read categories');
     }
 
     public function view(User $user, Category $category)
     {
-        if (!$user->hasPermissionTo('read categories')) {
-            throw new UnauthorizedException(403);
-        }
-        return true;
+        return $this->validatePolicy->handle($user, 'read categories');
     }
 
     public function create(User $user)
     {
-        if (!$user->hasPermissionTo('create categories')) {
-            throw new UnauthorizedException(403);
-        }
-        return true;
+        return $this->validatePolicy->handle($user, 'create categories');
     }
 
     public function update(User $user, Category $category)
     {
-        if (!$user->hasPermissionTo('update categories')) {
-            throw new UnauthorizedException(403);
-        }
-        return true;
+        return $this->validatePolicy->handle($user, 'update categories');
     }
 
-    public function delete(User $user, Category $category)
+    public function destroy(User $user, Category $category)
     {
-        if (!$user->hasPermissionTo('destroy categories')) {
-            throw new UnauthorizedException(403);
-        }
-        return true;
+        return $this->validatePolicy->handle($user, 'destroy categories');
     }
 }
