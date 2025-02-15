@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Classes\ValidatePolicy;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -9,6 +10,14 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class RolePolicy
 {
     use HandlesAuthorization;
+
+    protected ValidatePolicy $validatePolicy;
+
+    public function __construct(ValidatePolicy $validatePolicy)
+    {
+        $this->validatePolicy = $validatePolicy;
+    }
+
     public function before(User $user, $ability)
     {
         if ($user->hasRole('admin')) {
@@ -18,25 +27,16 @@ class RolePolicy
 
     public function viewAny(User $user): bool
     {
-        if (!$user->hasPermissionTo('view roles')) {
-            throw new AuthorizationException();
-        }
-        return true;
+        return $this->validatePolicy->handle($user, 'read roles');
     }
 
     public function view(User $user): bool
     {
-        if (!$user->hasPermissionTo('view roles')) {
-            throw new AuthorizationException();
-        }
-        return true;
+        return $this->validatePolicy->handle($user, 'read roles');
     }
 
     public function assignRole(User $user): bool
     {
-        if (!$user->hasPermissionTo('assign roles')) {
-            throw new AuthorizationException();
-        }
-        return true;
+        return $this->validatePolicy->handle($user, 'assign roles');
     }
 }

@@ -25,27 +25,27 @@ class CategoryPolicy
         }
     }
 
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return $this->validatePolicy->handle($user, 'read categories');
     }
 
-    public function view(User $user, Category $category)
+    public function view(User $user, Category $category): bool
     {
         return $this->validatePolicy->handle($user, 'read categories');
     }
 
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return $this->validatePolicy->handle($user, 'create categories');
     }
 
-    public function update(User $user, Category $category)
+    public function update(User $user, Category $category): bool
     {
         return $this->validatePolicy->handle($user, 'update categories');
     }
 
-    public function destroy(User $user, Category $category)
+    public function destroy(User $user, Category $category): bool
     {
         return $this->validatePolicy->handle($user, 'destroy categories');
     }
