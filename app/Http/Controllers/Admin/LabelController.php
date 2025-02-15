@@ -30,7 +30,8 @@ class LabelController extends Controller
 
     public function label_posts(int $labelId): AnonymousResourceCollection
     {
-        $this->authorize('view', Label::class);
+        $label = Label::findOrFail($labelId);
+        $this->authorize('view', $label);
 
         $label_posts = Post::whereHas('labels', function ($query) use ($labelId) {
             $query->where('label_id', $labelId);
