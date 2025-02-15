@@ -15,7 +15,7 @@ class RolesAndPermissionsSeeder extends Seeder
         'labels' => ['read labels', 'create labels', 'update labels', 'destroy labels'],
         'posts' => ['read posts', 'create posts', 'update posts', 'destroy posts'],
         'comments' => ['read comments', 'create comments', 'update comments', 'destroy comments'],
-        'roles' => ['assign role', 'read roles'],
+        'roles' => ['assign role', 'read roles', 'read users'],
         'permissions' => ['read permissions','assign permissions', 'revoke permissions']
     ];
 

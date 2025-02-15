@@ -19,6 +19,13 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RolesAndPermissionsSeeder::class);
 
+        $adminUser = User::factory()->create([
+            'name' => 'Admin User',
+            'email' => 'admin@example.com',
+            'password' => bcrypt('password')
+        ]);
+        $adminUser->assignRole('admin');
+
         $writerUsers = User::factory(10)->create();
 
         foreach ($writerUsers as $user) {
@@ -31,14 +38,6 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password')
         ]);
         $readerUser->assignRole('reader');
-
-
-        $adminUser = User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'password' => bcrypt('password')
-        ]);
-        $adminUser->assignRole('admin');
 
         Category::factory(50)->create();
         Label::factory(10)->create();

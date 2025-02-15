@@ -22,6 +22,19 @@ class PermissionController extends Controller
         return response()->json($permissions);
     }
 
+    public function getUserPermissions(User $user): JsonResponse
+    {
+        $this->authorize('view', $user);
+
+        $directPermissions = $user->getDirectPermissions()->pluck('name');
+        $rolePermissions = $user->getPermissionsViaRoles()->pluck('name');
+
+        return response()->json([
+            'direct_permissions' => $directPermissions,
+            'role_permissions' => $rolePermissions,
+        ]);
+    }
+
     public function assignPermission(Request $request, User $user): JsonResponse
     {
         $this->authorize('assignPermissions', Permission::class);
