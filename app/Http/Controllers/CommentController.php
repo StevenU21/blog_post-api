@@ -17,7 +17,7 @@ class CommentController extends Controller
 
     public function index(): AnonymousResourceCollection
     {
-        $this->authorize('read comments', Post::class);
+        $this->authorize('viewAny', Post::class);
 
         $comments = Comment::with('user', 'post')->latest()->paginate();
 
@@ -27,7 +27,7 @@ class CommentController extends Controller
     public function post_comments(int $postId): AnonymousResourceCollection
     {
         $post = Post::findOrFail($postId);
-        $this->authorize('read comments', $post);
+        $this->authorize('viewAny', $post);
 
         $comments = Comment::where('post_id', '=', $postId)
             ->with('user', 'post')->latest()->get();
@@ -38,7 +38,7 @@ class CommentController extends Controller
     public function store(CommentRequest $request, int $postId): CommentResource
     {
         $post = Post::findOrFail($postId);
-        $this->authorize('create comments', $post);
+        $this->authorize('create', $post);
 
         $comment = Comment::create($request->validated() + [
             'user_id' => Auth::id(),
@@ -51,7 +51,7 @@ class CommentController extends Controller
     public function update(CommentRequest $request, int $commentId): CommentResource
     {
         $comment = Comment::findOrFail($commentId);
-        $this->authorize('update comments', $comment);
+        $this->authorize('update', $comment);
 
         $comment->update($request->validated());
 
@@ -61,7 +61,7 @@ class CommentController extends Controller
     public function destroy(int $commentId): JsonResponse
     {
         $comment = Comment::findOrFail($commentId);
-        $this->authorize('destroy comments', $comment);
+        $this->authorize('destroy', $comment);
 
         $comment->delete();
 
