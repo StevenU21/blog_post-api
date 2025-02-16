@@ -54,14 +54,14 @@ class PostPolicy
      */
     public function update(User $user, Post $post): bool
     {
-        return $this->validatePolicy->handle($user, 'update posts');
+        return $this->validatePolicy->handle($user, 'update posts', $post);
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Post $post): bool
+    public function destroy(User $user, Post $post): bool
     {
-        return $this->validatePolicy->handle($user, 'destroy posts');
+        return $this->validatePolicy->handle($user, 'destroy posts', $post);
     }
 }
