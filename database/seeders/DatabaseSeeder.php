@@ -49,10 +49,8 @@ class DatabaseSeeder extends Seeder
         Category::factory(50)->create();
         Label::factory(10)->create();
 
-        Post::factory()->count(100)->create()->each(function (Post $post) {
-            $labels = Label::inRandomOrder()->take(rand(1, 5))->pluck('id')->toArray();
-            $post->labels()->sync($labels);
-        });
+        $labels = Label::inRandomOrder()->take(rand(1, 5))->pluck('id')->toArray();
+        Post::factory(100)->withLabels($labels)->create();
 
         Comment::factory(100)->create();
     }

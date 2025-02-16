@@ -25,7 +25,9 @@ class PostFactory extends Factory
             'content' => fake()->sentence(6),
             'image' => fake()->imageUrl(),
             'category_id' => Category::inRandomOrder()->first()->id,
-            'user_id' => User::inRandomOrder()->first()->id
+            'user_id' => User::inRandomOrder()->whereHas('roles', function ($query) {
+                $query->whereIn('name', ['writer', 'admin']);
+            })->first()->id,
         ];
     }
 
