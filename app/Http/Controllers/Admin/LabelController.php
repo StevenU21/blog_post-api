@@ -51,7 +51,7 @@ class LabelController extends Controller
     {
         $this->authorize('create', Label::class);
 
-        $label = Label::create($request->validated());
+        $label = Label::firstOrCreate($request->validated());
 
         return new LabelResource($label);
     }

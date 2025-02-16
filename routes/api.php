@@ -19,8 +19,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::apiResource('categories', CategoryController::class);
+    
     Route::get('/labels/{label}/posts', [LabelController::class, 'label_posts'])->name('labels.post');
+
     Route::apiResource('labels', LabelController::class);
+
+    Route::get('/posts/user', [PostController::class, 'own_posts'])->name('posts.user');
     Route::apiResource('posts', PostController::class);
 
     Route::prefix('/comments')->name('comments.')->group(function () {

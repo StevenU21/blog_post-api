@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -18,6 +19,13 @@ class PostController extends Controller
     {
         $per_page = $request->get('per_page', 10);
         $posts = Post::with('user', 'category', 'labels')->latest()->paginate($per_page);
+        return PostResource::collection($posts);
+    }
+
+    public function own_posts(Request $request): AnonymousResourceCollection
+    {
+        $per_page = $request->get('per_page', 5);
+        $posts = Auth::user()->posts()->with('user', 'category', 'labels')->paginate($per_page);
         return PostResource::collection($posts);
     }
 

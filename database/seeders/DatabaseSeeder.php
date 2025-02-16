@@ -26,6 +26,13 @@ class DatabaseSeeder extends Seeder
         ]);
         $adminUser->assignRole('admin');
 
+        $writerUser = User::factory()->create([
+            'name' => 'Writer User',
+            'email' => 'writer@example.com',
+            'password' => bcrypt('password')
+        ]);
+        $writerUser->assignRole('writer');
+
         $writerUsers = User::factory(10)->create();
 
         foreach ($writerUsers as $user) {
