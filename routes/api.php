@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Admin\LabelController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,7 +22,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('categories', CategoryController::class);
 
     Route::get('/labels/{label}/posts', [LabelController::class, 'label_posts'])->name('labels.post');
-
     Route::apiResource('labels', LabelController::class);
 
     Route::get('/posts/{user}', [PostController::class, 'user_posts'])->name('posts.user');
@@ -35,8 +35,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{comment}', [CommentController::class, 'destroy'])->name('destroy');
     });
 
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::apiResource('users', UserController::class)->only('index', 'show');
+
+    Route::get('/users/profile/index', [ProfileController::class, 'profile'])->name('profile');
 
     Route::middleware('role:admin')->prefix('/admin')->name('admin.')->group(function () {
         // Role routes
