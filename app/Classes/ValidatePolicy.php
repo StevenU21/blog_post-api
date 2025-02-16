@@ -18,7 +18,7 @@ class ValidatePolicy
         }
 
         if ($model && $user->id !== $model->user_id) {
-            throw new UnauthorizedException(403);
+            return throw new UnauthorizedException(403);
         }
 
         // admin is pro
