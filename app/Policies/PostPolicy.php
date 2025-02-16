@@ -13,9 +13,16 @@ class PostPolicy
 
     protected ValidatePolicy $validatePolicy;
 
-    public function _construct(ValidatePolicy $validatePolicy)
+    public function __construct(ValidatePolicy $validatePolicy)
     {
         $this->validatePolicy = $validatePolicy;
+    }
+
+    public function before(User $user, $ability)
+    {
+        if ($user->hasRole('admin')) {
+            return true;
+        }
     }
 
     /**
