@@ -23,7 +23,7 @@ class PostPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $this->validatePolicy->handle($user, 'read posts');
     }
 
     /**
@@ -31,7 +31,7 @@ class PostPolicy
      */
     public function view(User $user, Post $post): bool
     {
-        return false;
+        return $this->validatePolicy->handle($user, 'read posts');
     }
 
     /**
@@ -39,7 +39,7 @@ class PostPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $this->validatePolicy->handle($user, 'create posts');
     }
 
     /**
@@ -47,7 +47,7 @@ class PostPolicy
      */
     public function update(User $user, Post $post): bool
     {
-        return false;
+        return $this->validatePolicy->handle($user, 'update posts');
     }
 
     /**
@@ -55,6 +55,6 @@ class PostPolicy
      */
     public function delete(User $user, Post $post): bool
     {
-        return false;
+        return $this->validatePolicy->handle($user, 'destroy posts');
     }
 }
