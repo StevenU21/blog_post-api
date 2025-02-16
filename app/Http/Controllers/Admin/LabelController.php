@@ -75,4 +75,3 @@ class LabelController extends Controller
         return response()->json(['message' => 'Resource was deleted'], 200);
     }
 }
-

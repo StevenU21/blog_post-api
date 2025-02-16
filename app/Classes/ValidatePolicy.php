@@ -14,11 +14,11 @@ class ValidatePolicy
     public function handle(User $user, string $permission, ?Model $model = null): bool
     {
         if (!$user->hasPermissionTo($permission)) {
-            return throw new UnauthorizedException(403);
+            throw new UnauthorizedException(403);
         }
 
         if ($model && $user->id !== $model->user_id) {
-            return throw new UnauthorizedException(403);
+            throw new UnauthorizedException(403);
         }
 
         // admin is pro

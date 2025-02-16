@@ -5,26 +5,41 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
+use App\Models\Post;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index(): AnonymousResourceCollection
     {
+        $this->authorize('read comments', Post::class);
+
         $comments = Comment::with('user', 'post')->latest()->paginate();
+
         return CommentResource::collection($comments);
     }
 
     public function post_comments(int $postId): AnonymousResourceCollection
     {
-        $comments = Comment::where('post_id', '=', $postId)->with('user', 'post')->latest()->get();
+        $post = Post::findOrFail($postId);
+        $this->authorize('read comments', $post);
+
+        $comments = Comment::where('post_id', '=', $postId)
+            ->with('user', 'post')->latest()->get();
+
         return CommentResource::collection($comments);
     }
 
     public function store(CommentRequest $request, int $postId): CommentResource
     {
+        $post = Post::findOrFail($postId);
+        $this->authorize('create comments', $post);
+
         $comment = Comment::create($request->validated() + [
             'user_id' => Auth::id(),
             'post_id' => $postId,
@@ -36,6 +51,7 @@ class CommentController extends Controller
     public function update(CommentRequest $request, int $commentId): CommentResource
     {
         $comment = Comment::findOrFail($commentId);
+        $this->authorize('update comments', $comment);
 
         $comment->update($request->validated());
 
@@ -45,7 +61,10 @@ class CommentController extends Controller
     public function destroy(int $commentId): JsonResponse
     {
         $comment = Comment::findOrFail($commentId);
+        $this->authorize('destroy comments', $comment);
+
         $comment->delete();
+
         return response()->json(['message' => 'Resource Deleted'], 200);
     }
 }
