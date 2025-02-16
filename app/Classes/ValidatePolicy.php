@@ -21,6 +21,7 @@ class ValidatePolicy
             throw new UnauthorizedException(403);
         }
 
+        // admin is pro
         if ($user->hasRole('admin')) {
             return true;
         }
