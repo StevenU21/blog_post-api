@@ -22,7 +22,7 @@ class UserController extends Controller
 
     public function show(int $id): UserResource
     {
-        $user = User::findOrFailCustom($id);
+        $user = User::findOrFail($id);
         
         $this->authorize('view', $user);
 
