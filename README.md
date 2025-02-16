@@ -41,7 +41,7 @@ Esta API permite gestionar un blog personal mediante Laravel 11. Utiliza Laravel
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone [https://github.com/tu_usuario/tu_repositorio.git](https://github.com/StevenU21/blog-post-api.git)
+   git clone https://github.com/StevenU21/blog-post-api.git
    ```
 
    ```bash
