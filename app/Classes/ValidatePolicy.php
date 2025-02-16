@@ -21,6 +21,10 @@ class ValidatePolicy
             throw new UnauthorizedException(403);
         }
 
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+
         return true;
     }
 }
