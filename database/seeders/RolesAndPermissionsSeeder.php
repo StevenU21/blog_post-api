@@ -15,8 +15,9 @@ class RolesAndPermissionsSeeder extends Seeder
         'labels' => ['read labels', 'create labels', 'update labels', 'destroy labels'],
         'posts' => ['read posts', 'create posts', 'update posts', 'destroy posts'],
         'comments' => ['read comments', 'create comments', 'update comments', 'destroy comments'],
-        'roles' => ['assign role', 'read roles', 'read users'],
-        'permissions' => ['read permissions','assign permissions', 'revoke permissions']
+        'roles' => ['assign role', 'read roles'],
+        'users' => ['read users'],
+        'permissions' => ['read permissions', 'assign permissions', 'revoke permissions']
     ];
 
     protected function createPermissions(): void
@@ -45,7 +46,8 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->filterPermissions('categories')->only(['read categories'])->get(),
             $this->filterPermissions('labels')->remove(['destroy labels'])->get(),
             $this->filterPermissions('posts')->get(),
-            $this->filterPermissions('comments')->get()
+            $this->filterPermissions('comments')->get(),
+            $this->filterPermissions('users')->get()
         );
 
         $writerRole->givePermissionTo($writerPermissions);
@@ -54,7 +56,8 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->filterPermissions('categories')->only(['read categories'])->get(),
             $this->filterPermissions('labels')->only(['read labels'])->get(),
             $this->filterPermissions('posts')->only(['read posts'])->get(),
-            $this->filterPermissions('comments')->get()
+            $this->filterPermissions('comments')->get(),
+            $this->filterPermissions('users')->get()
         );
 
         $readerRole->givePermissionTo($readerPermissions);

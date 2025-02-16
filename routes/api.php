@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
 
     Route::middleware('role:admin')->prefix('/admin')->name('admin.')->group(function () {
         // Role routes
