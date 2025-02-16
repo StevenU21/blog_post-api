@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -27,12 +28,12 @@ class PostController extends Controller
         return PostResource::collection($posts);
     }
 
-    public function own_posts(Request $request): AnonymousResourceCollection
+    public function user_posts(Request $request, User $user): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Post::class);
 
         $per_page = $request->get('per_page', 5);
-        $posts = Auth::user()->posts()->with('user', 'category', 'labels')->paginate($per_page);
+        $posts = $user->posts()->with('user', 'category', 'labels')->paginate($per_page);
 
         return PostResource::collection($posts);
     }
