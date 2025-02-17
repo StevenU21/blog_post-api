@@ -18,7 +18,7 @@ class PostResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
-            'image' => $this->image_url,
+            'cover_imave' => $this->image_url,
             'category' => $this->category->name,
             'user' => $this->user->name,
             'labels' => $this->labels->map(function ($label) {

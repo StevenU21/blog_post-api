@@ -43,7 +43,7 @@ class Post extends Model implements HasMedia
 
     public function getImageUrlAttribute(): string
     {
-        return asset('storage/' . $this->image);
+        return asset('storage/' . $this->cover_image);
     }
 
     public function labels(): BelongsToMany

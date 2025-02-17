@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Category;
-use App\Models\Label;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -23,7 +22,7 @@ class PostFactory extends Factory
         return [
             'title' => fake()->words(3, true),
             'content' => fake()->sentence(6),
-            'image' => fake()->imageUrl(),
+            'cover_image' => fake()->imageUrl(),
             'category_id' => Category::inRandomOrder()->first()->id,
             'user_id' => User::inRandomOrder()->whereHas('roles', function ($query) {
                 $query->whereIn('name', ['writer', 'admin']);
