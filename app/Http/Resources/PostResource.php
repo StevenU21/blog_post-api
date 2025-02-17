@@ -18,7 +18,7 @@ class PostResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
-            'cover_imave' => $this->image_url,
+            'cover_image' => $this->image_url,
             'category' => $this->category->name,
             'user' => $this->user->name,
             'labels' => $this->labels->map(function ($label) {
@@ -26,6 +26,9 @@ class PostResource extends JsonResource
                     'id' => $label->id,
                     'name' => $label->name
                 ];
+            }),
+            'images' => $this->getMedia('post_images')->map(function ($image) {
+                return $image->getUrl();
             }),
             'created_at' => $this->created_at->format('d-m-Y')
         ];

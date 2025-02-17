@@ -6,6 +6,7 @@ use App\Http\Requests\PostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Models\User;
+use App\Services\ImageService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class PostController extends Controller
         $this->authorize('viewAny', Post::class);
 
         $per_page = $request->get('per_page', 10);
-        $posts = Post::with('user', 'category', 'labels')->latest()->paginate($per_page);
+        $posts = Post::with('user', 'category', 'labels', 'media')->latest()->paginate($per_page);
 
         return PostResource::collection($posts);
     }
@@ -33,7 +34,7 @@ class PostController extends Controller
         $this->authorize('viewAny', Post::class);
 
         $per_page = $request->get('per_page', 5);
-        $posts = $user->posts()->with('user', 'category', 'labels')->paginate($per_page);
+        $posts = $user->posts()->with('user', 'category', 'labels', 'media')->paginate($per_page);
 
         return PostResource::collection($posts);
     }
@@ -47,17 +48,7 @@ class PostController extends Controller
         return new PostResource($post);
     }
 
-    private function manage_image($post, $image)
-    {
-        $userPath = Str::slug(auth()->user()->name, '-');
-        $imagePath = 'post_images/' . $userPath;
-        $imageName = Str::slug($post->title, '-') . '.' . $image->extension();
-        $imageUrl = Storage::disk('public')->putFileAs($imagePath, $image, $imageName);
-
-        return $post->update(['image' => $imageUrl]);
-    }
-
-    public function store(PostRequest $request): PostResource
+    public function store(PostRequest $request, ImageService $imageService): PostResource
     {
         $this->authorize('create', Post::class);
 
@@ -67,13 +58,16 @@ class PostController extends Controller
 
         $post->labels()->sync($request->labels);
 
-        $image = $request->image;
-        $this->manage_image($post, $image);
+        $imageService->storeLocal($post, $request->cover_image);
+
+        if ($request->hasFile('images')) {
+            $imageService->storeMedia($post, $request->file('images'));
+        }
 
         return new PostResource($post);
     }
 
-    public function update(PostRequest $request, Post $post): PostResource
+    public function update(PostRequest $request, Post $post, ImageService $imageService): PostResource
     {
         $this->authorize('update', $post);
 
@@ -83,7 +77,7 @@ class PostController extends Controller
 
         if ($image) {
             Storage::disk('public')->delete($post->image);
-            $this->manage_image($post, $image);
+            $imageService->storeLocal($post, $image);
         }
 
         return new PostResource($post);
