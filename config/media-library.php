@@ -81,7 +81,9 @@ return [
     /*
      * The class that contains the strategy for determining a media file's path.
      */
-    'path_generator' => Spatie\MediaLibrary\Support\PathGenerator\DefaultPathGenerator::class,
+    // 'path_generator' => Spatie\MediaLibrary\Support\PathGenerator\DefaultPathGenerator::class,
+
+    'path_generator' => App\Classes\CustomPathGenerator::class,
 
     /*
      * The class that contains the strategy for determining how to remove files.

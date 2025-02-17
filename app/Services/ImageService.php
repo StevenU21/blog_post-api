@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
@@ -21,7 +22,9 @@ class ImageService
 
         foreach ($files as $file)
         {
-            $media[] = $model->addMedia($file)->toMediaCollection($collectionName, $diskName);
+            $media[] = $model
+            ->addMedia($file)
+            ->toMediaCollection($collectionName, $diskName);
         }
 
         return $media;
