@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class ProfileController extends Controller
 {
     use AuthorizesRequests;
-    
+
     public function profile(): UserResource
     {
         $user = Auth::user();
@@ -20,5 +20,10 @@ class ProfileController extends Controller
         $user->load(['roles.permissions']);
 
         return new UserResource($user);
+    }
+
+    public function update()
+    {
+
     }
 }
