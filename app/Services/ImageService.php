@@ -11,19 +11,17 @@ use Spatie\MediaLibrary\HasMedia;
 class ImageService
 {
     protected UploadedFile $file;
-    
+
     public function storeMedia(Model&HasMedia $model, array $files, string $disk = 'public')
     {
         $modelName = class_basename($model);
         $folderName = strtolower($modelName) . '_images';
 
         $media = [];
-
+        
         foreach ($files as $file)
         {
-            $media[] = $model
-                ->addMedia($file)
-                ->toMediaCollection($folderName, $disk);
+            $media[] = $model->addMedia($file)->toMediaCollection($folderName, $disk);
         }
 
         return $media;
