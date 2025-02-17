@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->increments('id');
             $table->string('title');
             $table->string('content');
-            $table->string('image');
+            $table->string('cover_image');
 
             //Relations
             $table->integer('category_id')->unsigned();

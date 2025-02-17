@@ -22,11 +22,12 @@ class PostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string', 'min:4', 'max:40'],
-            'content' => ['required', 'string', 'min:6', 'max:255'],
-            'image' => ['required', 'image', 'mimes:jpg,png,jpeg,webp', 'max:4096'],
+            'title' => ['required', 'string', 'min:4', 'max:120'],
+            'content' => ['required', 'string', 'min:6', 'max:10000'],
+            'cover_image' => ['required', 'image', 'mimes:jpg,png,jpeg,webp', 'max:4096'],
+            'images' => ['required', 'array', 'min:1', 'max:10'],
+            'images.*' => ['required', 'image', 'mimes:jpg,png,jpeg,webp', 'max:4096'],
             'category_id' => ['required', 'exists:categories,id'],
-            'user_id' => ['exists:users,id'],
             'labels' => ['required', 'array', 'min:1', 'max:5'],
             'labels.*' => ['required', 'string', 'distinct', 'exists:labels,id']
         ];
