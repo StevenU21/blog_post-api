@@ -34,7 +34,7 @@ class LabelController extends Controller
 
         $label_posts = Post::whereHas('labels', function ($query) use ($label) {
             $query->where('label_id', $label->id);
-        })->with('user', 'category', 'labels')->latest()->paginate(10);
+        })->with('user', 'category', 'labels', 'media')->latest()->paginate(10);
 
         return PostResource::collection($label_posts);
     }

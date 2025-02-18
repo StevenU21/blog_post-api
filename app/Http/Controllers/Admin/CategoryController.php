@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\PostResource;
 use App\Models\Category;
+use App\Models\Post;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -23,6 +25,18 @@ class CategoryController extends Controller
         $categories = Category::latest()->paginate($per_page);
 
         return CategoryResource::collection($categories);
+    }
+
+    public function category_posts(Category $category): AnonymousResourceCollection
+    {
+        $this->authorize('view', $category);
+
+        $posts = Post::where('category_id', '=', $category->id)
+            ->with('user', 'category', 'labels', 'media')
+            ->latest()
+            ->paginate(10);
+
+        return PostResource::collection($posts);
     }
 
     public function show(Category $category): CategoryResource

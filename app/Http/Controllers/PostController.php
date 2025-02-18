@@ -42,7 +42,7 @@ class PostController extends Controller
     {
         $this->authorize('view', $post);
 
-        $post->load('user', 'category', 'labels');
+        $post->load('user', 'category', 'labels', 'media');
 
         return new PostResource($post);
     }
