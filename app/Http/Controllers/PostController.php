@@ -33,7 +33,8 @@ class PostController extends Controller
         $this->authorize('viewAny', Post::class);
 
         $per_page = $request->get('per_page', 5);
-        $posts = $user->posts()->with('user', 'category', 'labels', 'media')->paginate($per_page);
+        $posts = $user->posts()->with('user', 'category', 'labels', 'media')
+            ->paginate($per_page);
 
         return PostResource::collection($posts);
     }
@@ -55,7 +56,12 @@ class PostController extends Controller
 
         $post->labels()->sync($request->labels);
 
-        $imageService->storeLocal($post, $post->title, $request->cover_image);
+        $imageService->storeLocal(
+            $post,
+            'cover_image',
+            $post->title,
+            $request->file('cover_image')
+        );
 
         if ($request->hasFile('images')) {
             $imageService->storeMedia($post, $request->file('images'));
@@ -73,22 +79,21 @@ class PostController extends Controller
         $post->labels()->sync($request->labels);
 
         if ($request->hasFile('cover_image')) {
-            Storage::disk('public')->delete($post->cover_image);
-            $imageService->storeLocal($post, $post->title, $request->cover_image);
-        }
-
-        $mediaItems = $post->getMedia('post_images');
-
-        $images = $request->input('images', []);
-
-        foreach ($mediaItems as $media) {
-            if (!in_array($media->id, $images)) {
-                $media->delete();
-            }
+            $imageService->updateLocal(
+                $post,
+                'cover_image',
+                $post->title,
+                $request->file('cover_image')
+            );
         }
 
         if ($request->hasFile('images')) {
-            $imageService->storeMedia($post, $request->file('images'));
+            $imageService->updateMedia(
+                $post,
+                $request->input('images', []),
+                $request->file('images'),
+                'post_images'
+            );
         }
 
         return new PostResource($post->load('user', 'category', 'labels', 'media'));
