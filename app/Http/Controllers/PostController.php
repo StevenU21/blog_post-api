@@ -99,11 +99,11 @@ class PostController extends Controller
         return new PostResource($post->load('user', 'category', 'labels', 'media'));
     }
 
-    public function destroy(Post $post): JsonResponse
+    public function destroy(Post $post, ImageService $imageService): JsonResponse
     {
         $this->authorize('destroy', $post);
 
-        Storage::disk('public')->delete($post->cover_image);
+        $imageService->deleteLocal($post, 'cover_image');
 
         $post->delete();
 

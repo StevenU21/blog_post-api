@@ -96,4 +96,9 @@ class ImageService
         Storage::disk('public')->delete($model->$file_attribute);
         return $this->storeLocal($model, $file_attribute, $file_name, $file);
     }
+
+    public function deleteLocal(Model $model, $file_attribute)
+    {
+        return Storage::disk('public')->delete($model->$file_attribute);
+    }
 }
