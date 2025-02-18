@@ -79,9 +79,21 @@ class PostController extends Controller
             $imageService->storeLocal($post, $post->title, $request->cover_image);
         }
 
+        $mediaItems = $post->getMedia('post_images');
+
+        $images = $request->input('images', []);
+
+        foreach ($mediaItems as $media) {
+            if (!in_array($media->id, $images)) {
+                $media->delete();
+            }
+        }
+
         if ($request->hasFile('images')) {
             $imageService->storeMedia($post, $request->file('images'));
         }
+
+        $post->load('user', 'category', 'labels', 'media');
 
         return new PostResource($post);
     }
