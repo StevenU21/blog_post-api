@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -72,12 +71,16 @@ class PostController extends Controller
         $this->authorize('update', $post);
 
         $post->update($request->validated());
-        $post->labels()->sync($request->labels);
-        $image = $post->image;
 
-        if ($image) {
-            Storage::disk('public')->delete($post->image);
-            $imageService->storeLocal($post, $post->title, $image);
+        $post->labels()->sync($request->labels);
+
+        if ($request->hasFile('cover_image')) {
+            Storage::disk('public')->delete($post->cover_image);
+            $imageService->storeLocal($post, $post->title, $request->cover_image);
+        }
+
+        if ($request->hasFile('images')) {
+            $imageService->storeMedia($post, $request->file('images'));
         }
 
         return new PostResource($post);
