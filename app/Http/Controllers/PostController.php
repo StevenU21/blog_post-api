@@ -42,9 +42,7 @@ class PostController extends Controller
     {
         $this->authorize('view', $post);
 
-        $post->load('user', 'category', 'labels', 'media');
-
-        return new PostResource($post);
+        return new PostResource($post->load('user', 'category', 'labels', 'media'));
     }
 
     public function store(PostRequest $request, ImageService $imageService): PostResource
@@ -93,9 +91,7 @@ class PostController extends Controller
             $imageService->storeMedia($post, $request->file('images'));
         }
 
-        $post->load('user', 'category', 'labels', 'media');
-
-        return new PostResource($post);
+        return new PostResource($post->load('user', 'category', 'labels', 'media'));
     }
 
     public function destroy(Post $post): JsonResponse
