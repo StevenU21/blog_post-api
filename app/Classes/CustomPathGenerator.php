@@ -13,8 +13,8 @@ class CustomPathGenerator implements PathGenerator
         $user = auth()->user();
         $userSlug = Str::slug($user->name, '-');
         $modelName = strtolower(class_basename($media->model));
-
-        return "{$userSlug}/{$modelName}/{$media->id}/";
+        
+        return "{$userSlug}/{$modelName}/{$media->model->id}/{$media->id}/";
     }
 
     public function getPathForConversions(Media $media): string
