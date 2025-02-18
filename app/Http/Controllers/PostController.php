@@ -58,7 +58,7 @@ class PostController extends Controller
 
         $post->labels()->sync($request->labels);
 
-        $imageService->storeLocal($post, $request->cover_image);
+        $imageService->storeLocal($post, $post->title, $request->cover_image);
 
         if ($request->hasFile('images')) {
             $imageService->storeMedia($post, $request->file('images'));
@@ -77,7 +77,7 @@ class PostController extends Controller
 
         if ($image) {
             Storage::disk('public')->delete($post->image);
-            $imageService->storeLocal($post, $image);
+            $imageService->storeLocal($post, $post->title, $image);
         }
 
         return new PostResource($post);
@@ -88,7 +88,7 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
         $this->authorize('destroy', $post);
 
-        Storage::disk('public')->delete($post->image);
+        Storage::disk('public')->delete($post->cover_image);
 
         $post->delete();
 

@@ -30,13 +30,13 @@ class ImageService
         return $media;
     }
 
-    public function storeLocal(Model $model, $image)
+    public function storeLocal(Model $model, $attribute, $image)
     {
         $modelName = class_basename($model);
 
         $userPath = Str::slug(auth()->user()->name, '-');
         $imagePath = strtolower($modelName) . '_images/' . $userPath;
-        $imageName = Str::slug($model->title, '-') . '.' . $image->extension();
+        $imageName = Str::slug($attribute, '-') . '.' . $image->extension();
         $imageUrl = Storage::disk('public')->putFileAs($imagePath, $image, $imageName);
 
         return $model->update(['cover_image' => $imageUrl]);
