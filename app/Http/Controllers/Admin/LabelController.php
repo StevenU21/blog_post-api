@@ -28,13 +28,12 @@ class LabelController extends Controller
         return LabelResource::collection($labels);
     }
 
-    public function label_posts(int $labelId): AnonymousResourceCollection
+    public function label_posts(Label $label): AnonymousResourceCollection
     {
-        $label = Label::findOrFail($labelId);
         $this->authorize('view', $label);
 
-        $label_posts = Post::whereHas('labels', function ($query) use ($labelId) {
-            $query->where('label_id', $labelId);
+        $label_posts = Post::whereHas('labels', function ($query) use ($label) {
+            $query->where('label_id', $label->id);
         })->with('user', 'category', 'labels')->latest()->paginate(10);
 
         return PostResource::collection($label_posts);
