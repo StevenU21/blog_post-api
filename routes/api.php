@@ -24,7 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/labels/{label}/posts', [LabelController::class, 'label_posts'])->name('labels.post');
     Route::apiResource('labels', LabelController::class);
 
-    Route::get('/posts/{user}', [PostController::class, 'user_posts'])->name('posts.user');
+    Route::get('/posts/{user}/user', [PostController::class, 'user_posts'])->name('posts.user');
     Route::apiResource('posts', PostController::class);
 
     Route::prefix('/comments')->name('comments.')->group(function () {

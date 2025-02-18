@@ -10,10 +10,12 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class Post extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, HasSlug;
 
     protected $fillable = [
         'title',
@@ -22,6 +24,19 @@ class Post extends Model implements HasMedia
         'category_id',
         'user_id'
     ];
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('title')
+            ->saveSlugsTo('slug')
+            ->doNotGenerateSlugsOnUpdate();
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where($field ?? 'id', $value)->orWhere('slug', $value)->firstOrFail();
+    }
 
     public function registerMediaConversions(?Media $media = null): void
     {

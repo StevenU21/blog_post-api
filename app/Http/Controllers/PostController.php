@@ -83,9 +83,8 @@ class PostController extends Controller
         return new PostResource($post);
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(Post $post): JsonResponse
     {
-        $post = Post::findOrFail($id);
         $this->authorize('destroy', $post);
 
         Storage::disk('public')->delete($post->cover_image);
