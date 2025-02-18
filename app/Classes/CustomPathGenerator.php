@@ -18,7 +18,6 @@ class CustomPathGenerator implements PathGenerator
         return "{$userSlug}/{$modelName}/{$modelId}/{$media->id}/";
     }
 
-
     public function getPathForConversions(Media $media): string
     {
         return $this->getPath($media) . 'conversions/';
