@@ -25,6 +25,7 @@ class PostResource extends JsonResource
             'labels' => $this->labels->map(function ($label) {
                 return [
                     'id' => $label->id,
+                    'slug' => $label->slug,
                     'name' => $label->name
                 ];
             }),
