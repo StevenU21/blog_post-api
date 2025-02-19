@@ -2,35 +2,21 @@
 
 namespace App\Policies;
 
-use App\Classes\ValidatePolicy;
 use App\Models\Comment;
 use App\Models\User;
+use App\Traits\HasPermissionCheck;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CommentPolicy
 {
-    use HandlesAuthorization;
-
-    protected ValidatePolicy $validatePolicy;
-
-    public function __construct(ValidatePolicy $validatePolicy)
-    {
-        $this->validatePolicy = $validatePolicy;
-    }
-
-    public function before(User $user, $ability)
-    {
-        if ($user->hasRole('admin')) {
-            return true;
-        }
-    }
+    use HandlesAuthorization, HasPermissionCheck;
 
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $this->validatePolicy->handle($user, 'read comments');
+        return $this->checkPermission($user, 'read comments');
     }
 
     /**
@@ -38,7 +24,7 @@ class CommentPolicy
      */
     public function view(User $user, Comment $comment): bool
     {
-        return $this->validatePolicy->handle($user, 'read comments');
+        return $this->checkPermission($user, 'read comments');
     }
 
     /**
@@ -46,7 +32,7 @@ class CommentPolicy
      */
     public function create(User $user): bool
     {
-        return $this->validatePolicy->handle($user, 'create comments');
+        return $this->checkPermission($user, 'create comments');
     }
 
     /**
@@ -54,7 +40,7 @@ class CommentPolicy
      */
     public function update(User $user, Comment $comment): bool
     {
-        return $this->validatePolicy->handle($user, 'update comments', $comment);
+        return $this->checkPermission($user, 'update comments', $comment);
     }
 
     /**
@@ -62,6 +48,6 @@ class CommentPolicy
      */
     public function destroy(User $user, Comment $comment): bool
     {
-        return $this->validatePolicy->handle($user, 'destroy comments', $comment);
+        return $this->checkPermission($user, 'destroy comments', $comment);
     }
 }

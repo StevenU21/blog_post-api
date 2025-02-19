@@ -2,35 +2,21 @@
 
 namespace App\Policies;
 
-use App\Classes\ValidatePolicy;
 use App\Models\Post;
 use App\Models\User;
+use App\Traits\HasPermissionCheck;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PostPolicy
 {
-    use HandlesAuthorization;
-
-    protected ValidatePolicy $validatePolicy;
-
-    public function __construct(ValidatePolicy $validatePolicy)
-    {
-        $this->validatePolicy = $validatePolicy;
-    }
-
-    public function before(User $user, $ability)
-    {
-        if ($user->hasRole('admin')) {
-            return true;
-        }
-    }
+    use HandlesAuthorization, HasPermissionCheck;
 
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $this->validatePolicy->handle($user, 'read posts');
+        return $this->checkPermission($user, 'read posts');
     }
 
     /**
@@ -38,7 +24,7 @@ class PostPolicy
      */
     public function view(User $user, Post $post): bool
     {
-        return $this->validatePolicy->handle($user, 'read posts');
+        return $this->checkPermission($user, 'read posts');
     }
 
     /**
@@ -46,7 +32,7 @@ class PostPolicy
      */
     public function create(User $user): bool
     {
-        return $this->validatePolicy->handle($user, 'create posts');
+        return $this->checkPermission($user, 'create posts');
     }
 
     /**
@@ -54,7 +40,7 @@ class PostPolicy
      */
     public function update(User $user, Post $post): bool
     {
-        return $this->validatePolicy->handle($user, 'update posts', $post);
+        return $this->checkPermission($user, 'update posts', $post);
     }
 
     /**
@@ -62,6 +48,6 @@ class PostPolicy
      */
     public function destroy(User $user, Post $post): bool
     {
-        return $this->validatePolicy->handle($user, 'destroy posts', $post);
+        return $this->checkPermission($user, 'destroy posts', $post);
     }
 }
