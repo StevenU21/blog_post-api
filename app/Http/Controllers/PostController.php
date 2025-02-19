@@ -12,7 +12,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -48,8 +47,6 @@ class PostController extends Controller
 
     public function store(PostRequest $request, ImageService $imageService): PostResource
     {
-        $this->authorize('create', Post::class);
-
         $post = Post::create($request->validated() + [
             'user_id' => Auth::id()
         ]);
@@ -72,8 +69,6 @@ class PostController extends Controller
 
     public function update(PostRequest $request, Post $post, ImageService $imageService): PostResource
     {
-        $this->authorize('update', $post);
-
         $post->update($request->validated());
 
         $post->labels()->sync($request->labels);

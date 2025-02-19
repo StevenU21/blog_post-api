@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Comment;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CommentRequest extends FormRequest
@@ -11,7 +12,15 @@ class CommentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        if ($this->isMethod('post')) {
+            return $this->user()->can('create', Comment::class);
+        }
+
+        if ($this->isMethod('put') || $this->isMethod('patch')) {
+            return $this->user()->can('update', $this->route('comment'));
+        }
+
+        return false;
     }
 
     /**

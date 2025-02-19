@@ -48,8 +48,6 @@ class LabelController extends Controller
 
     public function store(LabelRequest $request): LabelResource
     {
-        $this->authorize('create', Label::class);
-
         $label = Label::firstOrCreate($request->validated());
 
         return new LabelResource($label);
@@ -57,8 +55,6 @@ class LabelController extends Controller
 
     public function update(LabelRequest $request, Label $label): LabelResource
     {
-        $this->authorize('update', $label);
-
         $label->update($request->validated());
 
         return new LabelResource($label);

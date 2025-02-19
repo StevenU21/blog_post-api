@@ -34,11 +34,9 @@ class CommentController extends Controller
 
         return CommentResource::collection($comments);
     }
+    
     public function store(CommentRequest $request, int $postId): CommentResource
     {
-        $post = Post::findOrFail($postId);
-        $this->authorize('create', $post);
-
         $comment = Comment::create($request->validated() + [
             'user_id' => Auth::id(),
             'post_id' => $postId,
@@ -47,11 +45,8 @@ class CommentController extends Controller
         return new CommentResource($comment);
     }
 
-    public function update(CommentRequest $request, int $commentId): CommentResource
+    public function update(CommentRequest $request, Comment $comment): CommentResource
     {
-        $comment = Comment::findOrFail($commentId);
-        $this->authorize('update', $comment);
-
         $comment->update($request->validated());
 
         return new CommentResource($comment);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -12,7 +13,15 @@ class CategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        if ($this->isMethod('post')) {
+            return $this->user()->can('create', Category::class);
+        }
+
+        if ($this->isMethod('put') || $this->isMethod('patch')) {
+            return $this->user()->can('update', $this->route('category'));
+        }
+
+        return false;
     }
 
     /**

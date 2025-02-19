@@ -48,8 +48,6 @@ class CategoryController extends Controller
 
     public function store(CategoryRequest $request): CategoryResource
     {
-        $this->authorize('create', Category::class);
-
         $category = Category::create($request->validated());
 
         return new CategoryResource($category);
@@ -57,8 +55,6 @@ class CategoryController extends Controller
 
     public function update(CategoryRequest $request, Category $category): CategoryResource
     {
-        $this->authorize('update', $category);
-
         $category->update($request->validated());
 
         return new CategoryResource($category);

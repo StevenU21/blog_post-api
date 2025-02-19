@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Post;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PostRequest extends FormRequest
@@ -11,7 +12,15 @@ class PostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        if ($this->isMethod('post')) {
+            return $this->user()->can('create', Post::class);
+        }
+
+        if ($this->isMethod('put') || $this->isMethod('patch')) {
+            return $this->user()->can('update', $this->route('post'));
+        }
+
+        return false;
     }
 
     /**

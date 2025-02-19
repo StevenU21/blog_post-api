@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Label;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -12,7 +13,15 @@ class LabelRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        if ($this->isMethod('post')) {
+            return $this->user()->can('create', Label::class);
+        }
+
+        if ($this->isMethod('put') || $this->isMethod('patch')) {
+            return $this->user()->can('update', $this->route('label'));
+        }
+
+        return false;
     }
 
     /**
