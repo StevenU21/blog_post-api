@@ -1,17 +1,22 @@
 <?php
 
-namespace App\Classes;
+namespace App\Traits;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 
-class ValidatePolicy
+trait HasPermissionCheck
 {
-    /**
-     * Handle the permission validation.
-     */
-    public function handle(User $user, string $permission, ?Model $model = null): bool
+
+    public function before(User $user, $ability)
+    {
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+    }
+
+    public function checkPermission(User $user, string $permission, ?Model $model = null): bool
     {
         if (!$user->hasPermissionTo($permission)) {
             throw new UnauthorizedException(403);
@@ -21,7 +26,6 @@ class ValidatePolicy
             throw new UnauthorizedException(403);
         }
 
-        // admin is pro
         if ($user->hasRole('admin')) {
             return true;
         }

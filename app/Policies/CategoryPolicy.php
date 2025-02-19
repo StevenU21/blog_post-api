@@ -2,51 +2,37 @@
 
 namespace App\Policies;
 
-use App\Classes\ValidatePolicy;
 use App\Models\Category;
 use App\Models\User;
+use App\Traits\HasPermissionCheck;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CategoryPolicy
 {
-    use HandlesAuthorization;
-
-    protected ValidatePolicy $validatePolicy;
-
-    public function __construct(ValidatePolicy $validatePolicy)
-    {
-        $this->validatePolicy = $validatePolicy;
-    }
-
-    public function before(User $user, $ability)
-    {
-        if ($user->hasRole('admin')) {
-            return true;
-        }
-    }
+    use HandlesAuthorization, HasPermissionCheck;
 
     public function viewAny(User $user): bool
     {
-        return $this->validatePolicy->handle($user, 'read categories');
+        return $this->checkPermission($user, 'read categories');
     }
 
     public function view(User $user, Category $category): bool
     {
-        return $this->validatePolicy->handle($user, 'read categories');
+        return $this->checkPermission($user, 'read categories');
     }
 
     public function create(User $user): bool
     {
-        return $this->validatePolicy->handle($user, 'create categories');
+        return $this->checkPermission($user, 'create categories');
     }
 
     public function update(User $user, Category $category): bool
     {
-        return $this->validatePolicy->handle($user, 'update categories');
+        return $this->checkPermission($user, 'update categories');
     }
 
     public function destroy(User $user, Category $category): bool
     {
-        return $this->validatePolicy->handle($user, 'destroy categories');
+        return $this->checkPermission($user, 'destroy categories');
     }
 }

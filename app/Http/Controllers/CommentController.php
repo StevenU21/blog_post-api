@@ -34,7 +34,6 @@ class CommentController extends Controller
 
         return CommentResource::collection($comments);
     }
-
     public function store(CommentRequest $request, int $postId): CommentResource
     {
         $post = Post::findOrFail($postId);
