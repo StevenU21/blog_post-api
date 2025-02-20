@@ -30,6 +30,7 @@ class ProfileController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:60'],
             'biography' => ['nullable', 'string', 'min:3', 'max:60'],
+            'receive_notifications' => ['nullable', 'in:true,false'],
             'profile_picture' => ['nullable', 'image', 'mimes:jpg,png,jpeg,webp', 'max:4096'],
         ]);
 
@@ -38,7 +39,7 @@ class ProfileController extends Controller
 
         $user->update($request->only(['name']));
 
-        $profile->update($request->only('biography', 'profile_picture'));
+        $profile->update($request->only('biography', 'profile_picture', 'receive_notifications'));
 
         if ($request->hasFile('profile_picture')) {
             $imageService->storeLocal(

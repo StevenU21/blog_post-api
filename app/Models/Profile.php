@@ -12,6 +12,7 @@ class Profile extends Model
 
     protected $fillable = [
         'biography',
+        'receive_notifications',
         'profile_picture',
         'user_id'
     ];

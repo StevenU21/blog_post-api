@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'biography' => $this->profile->biography,
             'profile_picture' => $this->profile->image_url,
+            'receive_notifications' => $this->profile->receive_notifications,
             'email' => $this->email,
             'role' => $this->roles->map(function ($role) {
                 return [
