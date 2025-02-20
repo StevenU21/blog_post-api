@@ -28,11 +28,14 @@ class RegisterController extends Controller
 
         $user->assignRole('reader');
 
+        $user->sendEmailVerificationNotification();
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
+            'message' => 'Registered user. Check your email to verify your account.',
             'access_token' => $token,
             'token_type' => 'Bearer',
-        ]);
+        ], 201);
     }
 }
