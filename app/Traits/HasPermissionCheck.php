@@ -8,7 +8,6 @@ use Spatie\Permission\Exceptions\UnauthorizedException;
 
 trait HasPermissionCheck
 {
-
     public function before(User $user, $ability)
     {
         if ($user->hasRole('admin')) {
