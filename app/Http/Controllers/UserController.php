@@ -15,18 +15,16 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        $users = User::with(['roles.permissions'])->latest()->paginate(10);
+        $users = User::with(['roles.permissions', 'profile'])->latest()->paginate(10);
 
         return UserResource::collection($users);
     }
 
-    public function show(int $id): UserResource
+    public function show(User $user): UserResource
     {
-        $user = User::findOrFail($id);
-
         $this->authorize('view', $user);
 
-        $user->load(['roles.permissions']);
+        $user->load(['roles.permissions', 'profile']);
 
         return new UserResource($user);
     }

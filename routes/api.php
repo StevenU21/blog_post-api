@@ -44,7 +44,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::apiResource('users', UserController::class)->only('index', 'show');
 
-    Route::get('/users/profile/index', [ProfileController::class, 'profile'])->name('profile');
+    Route::prefix('/profile')->name('profile.')->group(function () {
+        Route::get('/users/index', [ProfileController::class, 'profile'])->name('profile');
+        Route::put('/update', [ProfileController::class, 'updateProfile']);
+        Route::put('/password', [ProfileController::class, 'updatePassword']);
+    });
 
     Route::middleware('role:admin')->prefix('/admin')->name('admin.')->group(function () {
         // Role routes
