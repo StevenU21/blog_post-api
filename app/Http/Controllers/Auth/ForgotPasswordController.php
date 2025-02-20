@@ -31,7 +31,6 @@ class ForgotPasswordController extends Controller
             : response()->json(['message' => 'Unable to send reset link.'], 500);
     }
 
-
     public function resetPassword(Request $request)
     {
         $request->validate([
