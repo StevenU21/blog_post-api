@@ -35,7 +35,7 @@ class EmailVerificationController extends Controller
     /**
      * Reenviar email de verificación
      */
-    public function resend(Request $request)
+    public function resend(Request $request): JsonResponse
     {
         $user = Auth::user();
 
