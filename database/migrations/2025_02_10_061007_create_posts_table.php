@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->increments('id');
             $table->string('title');
             $table->string('content');
+            $table->unsignedBigInteger('views')->default(0);
             $table->string('cover_image');
             $table->string('slug');
 

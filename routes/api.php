@@ -32,7 +32,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::apiResource('labels', LabelController::class);
 
     Route::get('/posts/{user}/user', [PostController::class, 'user_posts'])->name('posts.user');
-    Route::apiResource('posts', PostController::class);
+    Route::apiResource('posts', PostController::class)->middlewareFor('show', 'track.views');
 
     Route::prefix('/comments')->name('comments.')->group(function () {
         Route::get('/', [CommentController::class, 'index'])->name('index');

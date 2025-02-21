@@ -22,6 +22,7 @@ class PostFactory extends Factory
         return [
             'title' => fake()->words(3, true),
             'content' => fake()->sentence(6),
+            'views' => fake()->numberBetween(1, 1000),
             'cover_image' => fake()->imageUrl(),
             'category_id' => Category::inRandomOrder()->first()->id,
             'user_id' => User::inRandomOrder()->whereHas('roles', function ($query) {
