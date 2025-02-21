@@ -46,11 +46,13 @@ class PostController extends Controller
     {
         $this->authorize('view', $post);
 
-        if ($post->status == 'draft') {
-            return response()->json(['message' => 'Resource not found.']);
+        $post->load('user', 'category', 'labels', 'media');
+
+        if ($post->status == 'draft' && $post->user_id !== auth()->id()) {
+            abort(404, 'Post not found');
         }
 
-        return new PostResource($post->load('user', 'category', 'labels', 'media'));
+        return new PostResource($post);
     }
 
     public function auth_user_posts(Request $request)
@@ -59,9 +61,9 @@ class PostController extends Controller
 
         $per_page = $request->get('per_page', 10);
         $status = $request->get('status', 'published');
-        $posts = auth()->user()->posts();
 
-        $posts = $posts->with('user', 'category', 'labels', 'media')
+        $posts = auth()->user()->posts()
+            ->with('user', 'category', 'labels', 'media')
             ->where('status', '=', $status)
             ->paginate($per_page);
 
