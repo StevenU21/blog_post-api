@@ -33,6 +33,7 @@ class PostRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'min:4', 'max:120'],
             'content' => ['required', 'string', 'min:6', 'max:10000'],
+            'status' => ['required', 'in:draft,published'],
             'cover_image' => ['required', 'image', 'mimes:jpg,png,jpeg,webp', 'max:4096'],
             'images' => ['nullable', 'array', 'min:1', 'max:10'],
             'images.*' => ['nullable', 'image', 'mimes:jpg,png,jpeg,webp', 'max:4096'],

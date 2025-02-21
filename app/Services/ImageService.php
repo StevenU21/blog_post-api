@@ -46,7 +46,7 @@ class ImageService
      * @param string $collectionName
      * @return array
      */
-    public function updateMedia(Model&HasMedia $model, array $mediaIdsToRetain ,array $files, string $collectionName)
+    public function updateMedia(Model&HasMedia $model, array $mediaIdsToRetain, array $files, string $collectionName)
     {
         $mediaItems = $model->getMedia($collectionName);
 
@@ -74,7 +74,7 @@ class ImageService
     {
         $modelName = class_basename($model);
 
-        $userPath = Str::slug(auth()->user()->name, '-');
+        $userPath = Str::slug(auth()->user()->slug, '-');
         $imagePath = strtolower($modelName) . '_images/' . $userPath;
         $fileName = Str::slug($file_name, '-') . '.' . $file->extension();
         $imageUrl = Storage::disk('public')->putFileAs($imagePath, $file, $fileName);

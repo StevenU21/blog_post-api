@@ -23,8 +23,7 @@ class PostController extends Controller
         $this->authorize('viewAny', Post::class);
 
         $per_page = $request->get('per_page', 10);
-        $posts = Post::with('user', 'category', 'labels', 'media')
-            ->where('status', 'published')
+        $posts = Post::where('status', 'published')
             ->paginate($per_page);
 
         return PostResource::collection($posts);
@@ -35,8 +34,7 @@ class PostController extends Controller
         $this->authorize('viewAny', Post::class);
 
         $per_page = $request->get('per_page', 5);
-        $posts = $user->posts()->with('user', 'category', 'labels', 'media')
-            ->where('status', 'published')
+        $posts = $user->posts()->where('status', 'published')
             ->paginate($per_page);
 
         return PostResource::collection($posts);
@@ -45,8 +43,6 @@ class PostController extends Controller
     public function show(Post $post)
     {
         $this->authorize('view', $post);
-
-        $post->load('user', 'category', 'labels', 'media');
 
         if ($post->status == 'draft' && $post->user_id !== auth()->id()) {
             abort(404, 'Post not found');
@@ -63,7 +59,6 @@ class PostController extends Controller
         $status = $request->get('status', 'published');
 
         $posts = auth()->user()->posts()
-            ->with('user', 'category', 'labels', 'media')
             ->where('status', '=', $status)
             ->paginate($per_page);
 

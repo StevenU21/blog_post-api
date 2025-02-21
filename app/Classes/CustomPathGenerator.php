@@ -10,8 +10,7 @@ class CustomPathGenerator implements PathGenerator
 {
     public function getPath(Media $media): string
     {
-        $user = auth()->user();
-        $userSlug = Str::slug($user->name, '-');
+        $userSlug = auth()->user()->slug;
         $modelName = strtolower(class_basename($media->model_type));
         $modelId = $media->model_id;
 
