@@ -31,7 +31,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/labels/{label}/posts', [LabelController::class, 'label_posts'])->name('labels.post');
     Route::apiResource('labels', LabelController::class);
 
-    Route::get('/posts/{user}/user', [PostController::class, 'user_posts'])->name('posts.user');
+    Route::get('/user/{user}/posts', [PostController::class, 'user_posts'])->name('posts.user');
+    Route::get('/user/posts', [PostController::class, 'auth_user_posts'])->name('posts.auth.user');
     Route::apiResource('posts', PostController::class)->middlewareFor('show', 'track.views');
 
     Route::prefix('/comments')->name('comments.')->group(function () {

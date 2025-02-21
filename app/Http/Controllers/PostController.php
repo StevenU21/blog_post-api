@@ -12,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use PhpParser\Node\Stmt\If_;
 
 class PostController extends Controller
 {
@@ -22,7 +23,9 @@ class PostController extends Controller
         $this->authorize('viewAny', Post::class);
 
         $per_page = $request->get('per_page', 10);
-        $posts = Post::with('user', 'category', 'labels', 'media')->latest()->paginate($per_page);
+        $posts = Post::with('user', 'category', 'labels', 'media')
+            ->where('status', 'published')
+            ->paginate($per_page);
 
         return PostResource::collection($posts);
     }
@@ -33,16 +36,36 @@ class PostController extends Controller
 
         $per_page = $request->get('per_page', 5);
         $posts = $user->posts()->with('user', 'category', 'labels', 'media')
+            ->where('status', 'published')
             ->paginate($per_page);
 
         return PostResource::collection($posts);
     }
 
-    public function show(Post $post): PostResource
+    public function show(Post $post)
     {
         $this->authorize('view', $post);
 
+        if ($post->status == 'draft') {
+            return response()->json(['message' => 'Resource not found.']);
+        }
+
         return new PostResource($post->load('user', 'category', 'labels', 'media'));
+    }
+
+    public function auth_user_posts(Request $request)
+    {
+        $this->authorize('viewAny', Post::class);
+
+        $per_page = $request->get('per_page', 10);
+        $status = $request->get('status', 'published');
+        $posts = auth()->user()->posts();
+
+        $posts = $posts->with('user', 'category', 'labels', 'media')
+            ->where('status', '=', $status)
+            ->paginate($per_page);
+
+        return PostResource::collection($posts);
     }
 
     public function store(PostRequest $request, ImageService $imageService): PostResource
