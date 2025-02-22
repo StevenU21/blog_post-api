@@ -8,6 +8,7 @@ use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,26 +16,35 @@ class CommentController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Post::class);
 
-        $comments = Comment::with('user', 'post')->latest()->paginate();
+        $order_by = $request->get('order_by', 'asc');
+        $per_page = $request->get('per_page', 10);
+
+        $comments = Comment::with('user', 'post')
+            ->orderBy('created_at', $order_by)
+            ->paginate($per_page);
 
         return CommentResource::collection($comments);
     }
 
-    public function post_comments(int $postId): AnonymousResourceCollection
+    public function post_comments(Request $request, int $postId): AnonymousResourceCollection
     {
         $post = Post::findOrFail($postId);
         $this->authorize('viewAny', $post);
 
+        $order_by = $request->get('order_by', 'asc');
+
         $comments = Comment::where('post_id', '=', $postId)
-            ->with('user', 'post')->latest()->get();
+            ->with('user', 'post')
+            ->orderBy('created_at', $order_by)
+            ->get();
 
         return CommentResource::collection($comments);
     }
-    
+
     public function store(CommentRequest $request, int $postId): CommentResource
     {
         $comment = Comment::create($request->validated() + [

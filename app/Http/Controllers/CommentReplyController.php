@@ -14,8 +14,10 @@ class CommentReplyController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $per_page = $request->get('per_page', 10);
+        $order_by = $request->get('order_by', 'asc');
 
         $replies = CommentReply::with('user', 'comment')
+            ->orderBy('created_at', $order_by)
             ->paginate($per_page);
 
         return CommentReplyResource::collection($replies);
@@ -25,6 +27,7 @@ class CommentReplyController extends Controller
     {
         $replies = CommentReply::where('comment_id', '=', $commentId)
             ->with('user')
+            ->oldest()
             ->paginate(5);
 
         return CommentReplyResource::collection($replies);
@@ -34,6 +37,7 @@ class CommentReplyController extends Controller
     {
         $responses = CommentReply::where('parent_reply_id', '=', $parent_reply_id)
             ->with('user')
+            ->oldest()
             ->paginate(5);
 
         return CommentReplyResource::collection($responses);
