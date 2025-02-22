@@ -21,7 +21,7 @@ class CategoryResource extends JsonResource
             'slug' => $this->slug,
             'name' => $this->name,
             'description' => $this->description,
-            'created_at' => $this->created_at->format('d-m-Y H:i:s')
+            'created_at' => $this->created_at->isoFormat('DD-MM-YYYY HH:mm:ss'), 
         ];
     }
 }

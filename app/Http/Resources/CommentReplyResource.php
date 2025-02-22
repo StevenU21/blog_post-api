@@ -18,7 +18,8 @@ class CommentReplyResource extends JsonResource
             'id' => $this->id,
             'content' => $this->content,
             'user' => $this->user->name,
-            'created_at' => $this->created_at->format('d-m-Y H:i:s')
+            'parent_reply_id' => $this->parent_reply_id,
+            'created_at' => $this->created_at->isoFormat('DD-MM-YYYY HH:mm:ss'), 
         ];
     }
 }
