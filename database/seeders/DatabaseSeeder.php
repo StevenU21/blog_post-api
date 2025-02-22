@@ -60,8 +60,8 @@ class DatabaseSeeder extends Seeder
         ]);
         $readerUser->assignRole('reader');
 
-        Category::factory(50)->create();
-        Label::factory(10)->create();
+        Category::factory(10)->create();
+        Label::factory(20)->create();
 
         $labels = Label::inRandomOrder()->take(rand(1, 5))->pluck('id')->toArray();
         Post::factory(100)->withLabels($labels)->create();
