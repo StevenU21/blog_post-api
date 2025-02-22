@@ -2,12 +2,17 @@
 
 namespace App\Classes;
 
-use Illuminate\Support\Str;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\Support\PathGenerator\PathGenerator;
 
 class CustomPathGenerator implements PathGenerator
 {
+    /**
+     * Get the base path for the media file.
+     *
+     * @param Media $media The media instance.
+     * @return string The generated path.
+     */
     public function getPath(Media $media): string
     {
         $userSlug = auth()->user()->slug;
@@ -17,11 +22,23 @@ class CustomPathGenerator implements PathGenerator
         return "{$userSlug}/{$modelName}/{$modelId}/{$media->id}/";
     }
 
+    /**
+     * Get the path for conversions of the media file.
+     *
+     * @param Media $media The media instance.
+     * @return string The generated path for conversions.
+     */
     public function getPathForConversions(Media $media): string
     {
         return $this->getPath($media) . 'conversions/';
     }
 
+    /**
+     * Get the path for responsive images of the media file.
+     *
+     * @param Media $media The media instance.
+     * @return string The generated path for responsive images.
+     */
     public function getPathForResponsiveImages(Media $media): string
     {
         return $this->getPath($media) . 'responsive/';
