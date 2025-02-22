@@ -9,21 +9,21 @@ class PermissionManager
      *
      * @var array
      */
-    private $permissions;
+    private array $permissions;
 
     /**
      * List of permissions that have been filtered and organized.
      *
      * @var array
      */
-    private $filteredPermissions;
+    private array $filteredPermissions;
 
     /**
      * Special permissions that override the default permissions.
      *
      * @var array
      */
-    private $specialPermissions;
+    private array $specialPermissions;
 
     /**
      * Default allowed actions on resources.
@@ -56,14 +56,17 @@ class PermissionManager
             $resource = is_numeric($key) ? $value : $key;
             $actions = is_numeric($key) ? [] : $value;
 
+            $actionsList = $actions ?: self::DEFAULT_ACTIONS;
+            $basePermissions = array_map(
+                fn($action) => sprintf('%s %s', $action, $resource),
+                $actionsList
+            );
+
             if (isset($this->specialPermissions[$resource])) {
-                $filtered[$resource] = $this->specialPermissions[$resource];
+                $specials = $this->specialPermissions[$resource];
+                $filtered[$resource] = array_unique(array_merge($basePermissions, $specials));
             } else {
-                $actionsList = $actions ?: self::DEFAULT_ACTIONS;
-                $filtered[$resource] = array_map(
-                    fn($action) => sprintf('%s %s', $action, $resource),
-                    $actionsList
-                );
+                $filtered[$resource] = $basePermissions;
             }
         }
 
@@ -84,39 +87,41 @@ class PermissionManager
      * Removes specific permissions from the current list of permissions.
      *
      * @param array $remove List of permissions to remove.
-     * @return self Current instance with the updated permissions.
+     * @return self New instance with the updated permissions.
      */
     public function remove(array $remove): self
     {
+        $clone = clone $this;
+
         foreach ($remove as $r) {
-            foreach ($this->filteredPermissions as $resource => &$actions) {
-                $actions = array_values(array_diff($actions, [$r])); // array_values para reindexar
+            foreach ($clone->filteredPermissions as $resource => &$actions) {
+                $actions = array_values(array_diff($actions, [$r]));
                 if (empty($actions)) {
-                    unset($this->filteredPermissions[$resource]);
+                    unset($clone->filteredPermissions[$resource]);
                 }
             }
         }
-        return $this;
-    }
 
+        return $clone;
+    }
 
     /**
      * Filters the current permissions to include only the specified ones.
      *
      * @param array $only List of permissions to retain.
-     * @return self Current instance with the filtered permissions.
+     * @return self New instance with the filtered permissions.
      */
     public function only(array $only): self
     {
-        foreach ($this->filteredPermissions as $resource => &$actions) {
-            $actions = array_values(array_intersect($actions, $only));
+        $clone = clone $this;
 
+        foreach ($clone->filteredPermissions as $resource => &$actions) {
+            $actions = array_values(array_intersect($actions, $only));
             if (empty($actions)) {
-                unset($this->filteredPermissions[$resource]);
+                unset($clone->filteredPermissions[$resource]);
             }
         }
 
-        return $this;
+        return $clone;
     }
-
 }

@@ -70,7 +70,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->filterPermissions('posts')->get(),
             $this->filterPermissions('comments')->get(),
             $this->filterPermissions('replies')->get(),
-            $this->filterPermissions('profile')->get()
+            $this->filterPermissions('profiles')->get()
         );
 
         $writerRole->givePermissionTo($writerPermissions);
@@ -81,7 +81,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->filterPermissions('posts')->only(['read posts'])->get(),
             $this->filterPermissions('comments')->get(),
             $this->filterPermissions('replies')->get(),
-            $this->filterPermissions('profile')->get()
+            $this->filterPermissions('profiles')->get()
         );
 
         $readerRole->givePermissionTo($readerPermissions);
