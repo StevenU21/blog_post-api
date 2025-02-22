@@ -17,8 +17,8 @@ class RolesAndPermissionsSeeder extends Seeder
         'replies' => [],
         'users' => [],
         'profiles' => [],
-        'roles',
-        'permissions'
+        'roles' => [],
+        'permissions' => []
     ];
 
     const SPECIAL_PERMISSIONS = [
@@ -41,15 +41,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
     protected function createPermissions($permissions): void
     {
-        if (!is_array($permissions)) {
-            return;
-        }
-
         foreach ($permissions as $perms) {
-            if (!is_array($perms)) {
-                continue;
-            }
-
             foreach ($perms as $perm) {
                 Permission::firstOrCreate(['name' => $perm]);
             }
