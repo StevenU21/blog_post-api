@@ -18,7 +18,7 @@ class CommentController extends Controller
 
     public function index(Request $request): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', Post::class);
+        $this->authorize('viewAny', Comment::class);
 
         $order_by = $request->get('order_by', 'asc');
         $per_page = $request->get('per_page', 10);

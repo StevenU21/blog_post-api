@@ -4,10 +4,12 @@ namespace App\Providers;
 
 use App\Models\Category;
 use App\Models\Comment;
+use App\Models\CommentReply;
 use App\Models\Post;
 use App\Models\User;
 use App\Policies\CategoryPolicy;
 use App\Policies\CommentPolicy;
+use App\Policies\CommentReplyPolicy;
 use App\Policies\PostPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\UserPolicy;
@@ -41,5 +43,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Category::class, CategoryPolicy::class);
         Gate::policy(Post::class, PostPolicy::class);
         Gate::policy(Comment::class, CommentPolicy::class);
+        Gate::policy(CommentReply::class, CommentReplyPolicy::class);
     }
 }

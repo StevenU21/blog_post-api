@@ -4,15 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentReplyRequest;
 use App\Http\Resources\CommentReplyResource;
+use App\Models\Comment;
 use App\Models\CommentReply;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class CommentReplyController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index(Request $request): AnonymousResourceCollection
     {
+        $this->authorize('viewAny', CommentReply::class);
+
         $per_page = $request->get('per_page', 10);
         $order_by = $request->get('order_by', 'asc');
 
@@ -25,6 +31,8 @@ class CommentReplyController extends Controller
 
     public function commentReplies(int $commentId): AnonymousResourceCollection
     {
+        $this->authorize('viewAny', CommentReply::class);
+
         $replies = CommentReply::where('comment_id', '=', $commentId)
             ->with('user')
             ->oldest()
@@ -35,6 +43,8 @@ class CommentReplyController extends Controller
 
     public function replyResponses(int $parent_reply_id): AnonymousResourceCollection
     {
+        $this->authorize('viewAny', CommentReply::class);
+
         $responses = CommentReply::where('parent_reply_id', '=', $parent_reply_id)
             ->with('user')
             ->oldest()
@@ -45,6 +55,9 @@ class CommentReplyController extends Controller
 
     public function store(CommentReplyRequest $request, int $commentId, int $parent_reply_id = null): CommentReplyResource
     {
+        $comment = Comment::findOrFail($commentId);
+        $this->authorize('create', $comment);
+
         $reply = CommentReply::create($request->validated() + [
             'user_id' => auth()->id(),
             'comment_id' => $commentId,
@@ -58,6 +71,8 @@ class CommentReplyController extends Controller
     {
         $reply = CommentReply::findOrFail($replyId);
 
+        $this->authorize('update', $reply);
+
         $reply->update($request->validated());
 
         return new CommentReplyResource($reply);
@@ -66,6 +81,8 @@ class CommentReplyController extends Controller
     public function destroy(int $replyId): JsonResponse
     {
         $reply = CommentReply::findOrFail($replyId);
+
+        $this->authorize('destroy', $reply);
 
         $reply->delete();
 
