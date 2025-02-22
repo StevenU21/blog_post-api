@@ -2,38 +2,66 @@
 
 namespace Database\Seeders;
 
-use App\Classes\PermissionFilter;
+use App\Classes\PermissionManager;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
     const PERMISSIONS = [
-        'categories' => ['read categories', 'create categories', 'update categories', 'destroy categories'],
-        'labels' => ['read labels', 'create labels', 'update labels', 'destroy labels'],
-        'posts' => ['read posts', 'create posts', 'update posts', 'destroy posts'],
-        'comments' => ['read comments', 'create comments', 'update comments', 'destroy comments'],
-        'replies' => [' read replies', 'create replies', 'update replies', 'destroy replies'],
-        'roles' => ['read roles', 'assign role'],
-        'users' => ['read users', 'create users', 'update users', 'destroy users'],
-        'profile' => ['read profile', 'update profile', 'update password'],
+        'categories' => [],
+        'labels' => [],
+        'posts' => [],
+        'comments' => [],
+        'replies' => [],
+        'users' => [],
+        'profiles' => [],
+        'roles',
+        'permissions'
+    ];
+
+    const SPECIAL_PERMISSIONS = [
+        'roles' => ['read roles', 'assign roles'],
         'permissions' => ['read permissions', 'assign permissions', 'revoke permissions']
     ];
 
-    protected function createPermissions(): void
+    /**
+     * Run the database seeds.
+     */
+    public function run()
     {
-        foreach (self::PERMISSIONS as $resource => $perms) {
+        $manager = new PermissionManager(self::PERMISSIONS, self::SPECIAL_PERMISSIONS);
+        $allPermissions = $manager->get();
+
+        $this->createPermissions($allPermissions);
+
+        $this->assignPermissionsToRoles();
+    }
+
+    protected function createPermissions($permissions): void
+    {
+        if (!is_array($permissions)) {
+            return;
+        }
+
+        foreach ($permissions as $perms) {
+            if (!is_array($perms)) {
+                continue;
+            }
+
             foreach ($perms as $perm) {
                 Permission::firstOrCreate(['name' => $perm]);
             }
         }
     }
 
-    protected function filterPermissions($permission): PermissionFilter
+    protected function filterPermissions($permission): PermissionManager
     {
-        return new PermissionFilter(self::PERMISSIONS[$permission]);
+        $permissions = self::PERMISSIONS[$permission] ?? [];
+        $specialPermissions = self::SPECIAL_PERMISSIONS[$permission] ?? [];
+
+        return new PermissionManager([$permission => $permissions], [$permission => $specialPermissions]);
     }
 
     protected function assignPermissionsToRoles(): void
@@ -65,16 +93,5 @@ class RolesAndPermissionsSeeder extends Seeder
         );
 
         $readerRole->givePermissionTo($readerPermissions);
-    }
-
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
-    {
-        DB::transaction(function () {
-            $this->createPermissions();
-            $this->assignPermissionsToRoles();
-        });
     }
 }
