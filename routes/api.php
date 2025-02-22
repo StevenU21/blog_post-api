@@ -43,10 +43,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::put('/{comment}', [CommentController::class, 'update'])->name('update');
         Route::delete('/{comment}', [CommentController::class, 'destroy'])->name('destroy');
     });
+
     Route::prefix('/replies')->name('comments.')->group(function () {
         Route::get('/', [CommentReplyController::class, 'index']);
         Route::get('/comments/{comment}', [CommentReplyController::class, 'commentReplies']);
         Route::get('/{reply}/response', [CommentReplyController::class, 'replyResponses']);
+        Route::post('/comment/{comment}/reply/{parent_reply?}', [CommentReplyController::class, 'store']);
+        Route::put('/{reply}/update', [CommentReplyController::class, 'update']);
+        Route::delete('/{reply}/destroy', [CommentReplyController::class, 'destroy']);
     });
 
     Route::apiResource('users', UserController::class)->only('index', 'show');

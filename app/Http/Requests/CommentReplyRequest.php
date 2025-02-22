@@ -11,7 +11,7 @@ class CommentReplyRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class CommentReplyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'content' => ['required', 'string', 'min:3', 'max:255'],
+            'user_id' => ['exists:users,id'],
+            'comment_id' => ['exists:comments,id'],
+            'parent_reply_id' => ['exists:comments_replies,id'],
         ];
     }
 }
