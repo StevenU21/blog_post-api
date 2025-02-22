@@ -16,8 +16,9 @@ class RolesAndPermissionsSeeder extends Seeder
         'posts' => ['read posts', 'create posts', 'update posts', 'destroy posts'],
         'comments' => ['read comments', 'create comments', 'update comments', 'destroy comments'],
         'replies' => [' read replies', 'create replies', 'update replies', 'destroy replies'],
-        'roles' => ['assign role', 'read roles'],
-        'users' => ['read users'],
+        'roles' => ['read roles', 'assign role'],
+        'users' => ['read users', 'create users', 'update users', 'destroy users'],
+        'profile' => ['read profile', 'update profile', 'update password'],
         'permissions' => ['read permissions', 'assign permissions', 'revoke permissions']
     ];
 
@@ -49,7 +50,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->filterPermissions('posts')->get(),
             $this->filterPermissions('comments')->get(),
             $this->filterPermissions('replies')->get(),
-            $this->filterPermissions('users')->get()
+            $this->filterPermissions('profile')->get()
         );
 
         $writerRole->givePermissionTo($writerPermissions);
@@ -60,7 +61,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->filterPermissions('posts')->only(['read posts'])->get(),
             $this->filterPermissions('comments')->get(),
             $this->filterPermissions('replies')->get(),
-            $this->filterPermissions('users')->get()
+            $this->filterPermissions('profile')->get()
         );
 
         $readerRole->givePermissionTo($readerPermissions);
