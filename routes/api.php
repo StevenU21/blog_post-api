@@ -45,8 +45,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     });
     Route::prefix('/replies')->name('comments.')->group(function () {
         Route::get('/', [CommentReplyController::class, 'index']);
-        Route::get('/comments/{comment}', [CommentReplyController::class, 'comment_replies']);
-        Route::get('/{reply}/response', [CommentReplyController::class, 'reply_reponses']);
+        Route::get('/comments/{comment}', [CommentReplyController::class, 'commentReplies']);
+        Route::get('/{reply}/response', [CommentReplyController::class, 'replyResponses']);
     });
 
     Route::apiResource('users', UserController::class)->only('index', 'show');

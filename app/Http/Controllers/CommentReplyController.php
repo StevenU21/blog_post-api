@@ -19,7 +19,7 @@ class CommentReplyController extends Controller
         return CommentReplyResource::collection($replies);
     }
 
-    public function comment_replies($commentId): AnonymousResourceCollection
+    public function commentReplies($commentId): AnonymousResourceCollection
     {
         $replies = CommentReply::where('comment_id', '=', $commentId)
             ->with('user')
@@ -28,7 +28,7 @@ class CommentReplyController extends Controller
         return CommentReplyResource::collection($replies);
     }
 
-    public function reply_reponses($parent_reply_id): AnonymousResourceCollection
+    public function replyResponses($parent_reply_id): AnonymousResourceCollection
     {
         $responses = CommentReply::where('parent_reply_id', '=', $parent_reply_id)
             ->with('user')
