@@ -23,7 +23,6 @@ class CommentReplyFactory extends Factory
             'content' => fake()->sentences(6, true),
             'user_id' => User::inRandomOrder()->first()->id,
             'comment_id' => Comment::inRandomOrder()->first()->id,
-            'parent_reply_id' => CommentReply::exists() && $this->faker->boolean ? CommentReply::inRandomOrder()->first()->id : null
         ];
     }
 }

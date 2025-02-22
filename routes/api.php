@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Admin\LabelController;
+use App\Http\Controllers\CommentReplyController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -41,6 +42,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('/post/{post}', [CommentController::class, 'store'])->name('post.store');
         Route::put('/{comment}', [CommentController::class, 'update'])->name('update');
         Route::delete('/{comment}', [CommentController::class, 'destroy'])->name('destroy');
+    });
+    Route::prefix('/replies')->name('comments.')->group(function () {
+        Route::get('/', [CommentReplyController::class, 'index']);
+        Route::get('/comments/{comment}', [CommentReplyController::class, 'comment_replies']);
+        Route::get('/{reply}/response', [CommentReplyController::class, 'reply_reponses']);
     });
 
     Route::apiResource('users', UserController::class)->only('index', 'show');

@@ -67,6 +67,15 @@ class DatabaseSeeder extends Seeder
         Post::factory(100)->withLabels($labels)->create();
 
         Comment::factory(100)->create();
-        CommentReply::factory(300)->create();
+        $replies = CommentReply::factory(300)->create();
+
+        $replies->each(function ($reply) use ($replies) {
+            $repliesForSameComment = $replies->where('comment_id', $reply->comment_id)->where('id', '!=', $reply->id);
+
+            if ($repliesForSameComment->count() && rand(0, 1)) {
+                $parentReply = $repliesForSameComment->random();
+                $reply->update(['parent_reply_id' => $parentReply->id]);
+            }
+        });
     }
 }

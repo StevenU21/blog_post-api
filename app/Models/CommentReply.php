@@ -28,7 +28,7 @@ class CommentReply extends Model
         return $this->belongsTo(Comment::class);
     }
 
-    public function parentReply()
+    public function parentReply(): BelongsTo
     {
         return $this->belongsTo(CommentReply::class, 'parent_reply_id');
     }
