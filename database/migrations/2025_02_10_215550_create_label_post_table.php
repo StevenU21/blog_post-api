@@ -16,6 +16,7 @@ return new class extends Migration {
 
             $table->integer('post_id')->unsigned();
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade')->onUpdate('cascade');
+
             $table->index(['post_id', 'label_id']);
             $table->timestamps();
         });
