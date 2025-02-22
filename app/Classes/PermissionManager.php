@@ -89,16 +89,16 @@ class PermissionManager
     public function remove(array $remove): self
     {
         foreach ($remove as $r) {
-            foreach ($this->filteredPermissions as $resource => $actions) {
-                $this->filteredPermissions[$resource] = array_diff($actions, [$r]);
-
-                if (empty($this->filteredPermissions[$resource])) {
+            foreach ($this->filteredPermissions as $resource => &$actions) {
+                $actions = array_values(array_diff($actions, [$r])); // array_values para reindexar
+                if (empty($actions)) {
                     unset($this->filteredPermissions[$resource]);
                 }
             }
         }
         return $this;
     }
+
 
     /**
      * Filters the current permissions to include only the specified ones.
@@ -108,10 +108,15 @@ class PermissionManager
      */
     public function only(array $only): self
     {
-        foreach ($this->filteredPermissions as $resource => $actions) {
-            $this->filteredPermissions[$resource] = array_intersect($actions, $only);
+        foreach ($this->filteredPermissions as $resource => &$actions) {
+            $actions = array_values(array_intersect($actions, $only));
+
+            if (empty($actions)) {
+                unset($this->filteredPermissions[$resource]);
+            }
         }
 
         return $this;
     }
+
 }
