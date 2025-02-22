@@ -81,25 +81,6 @@ class PermissionManager
     }
 
     /**
-     * Adds specific permissions from the current list of permissions.
-     *
-     * @return self Current instance with the added permissions.
-     */
-    public function add(string $resource, array $actions): self
-    {
-        if (!isset($this->filteredPermissions[$resource])) {
-            $this->filteredPermissions[$resource] = [];
-        }
-        $this->filteredPermissions[$resource] = array_unique(
-            array_merge($this->filteredPermissions[$resource], array_map(
-                fn($action) => "$action $resource",
-                $actions
-            ))
-        );
-        return $this;
-    }
-
-    /**
      * Removes specific permissions from the current list of permissions.
      *
      * @param array $remove List of permissions to remove.
@@ -112,13 +93,12 @@ class PermissionManager
                 $this->filteredPermissions[$resource] = array_diff($actions, [$r]);
 
                 if (empty($this->filteredPermissions[$resource])) {
-                    unset($this->filteredPermissions[$resource]); 
+                    unset($this->filteredPermissions[$resource]);
                 }
             }
         }
         return $this;
     }
-
 
     /**
      * Filters the current permissions to include only the specified ones.
