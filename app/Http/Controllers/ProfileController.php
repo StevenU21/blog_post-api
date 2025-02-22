@@ -18,8 +18,6 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        $this->authorize('view', $user);
-
         $user->load(['roles.permissions', 'profile']);
 
         return new UserResource($user);

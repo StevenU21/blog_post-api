@@ -41,9 +41,8 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (HttpException $e, Request $request) {
-            if ($e->getMessage() === 'Your email address is not verified.') {
-                return response()->json(['message' => 'Tu correo electrónico no ha sido verificado.'], 403);
-            }
+            return response()->json(['message' => 'Your email address is not verified.'], 403);
+
         });
 
     })->create();
