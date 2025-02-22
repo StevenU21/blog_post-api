@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Comment;
+use App\Models\CommentReply;
 use App\Models\Label;
 use App\Models\Post;
 use App\Models\Profile;
@@ -66,5 +67,6 @@ class DatabaseSeeder extends Seeder
         Post::factory(100)->withLabels($labels)->create();
 
         Comment::factory(100)->create();
+        CommentReply::factory(300)->create();
     }
 }
