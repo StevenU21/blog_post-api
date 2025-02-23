@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use App\Models\User;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Support\Facades\Hash;
@@ -12,7 +13,7 @@ use Illuminate\Http\Request;
 
 class ForgotPasswordController extends Controller
 {
-    public function sendResetLink(Request $request)
+    public function sendResetLink(Request $request): JsonResponse
     {
         $request->validate([
             'email' => ['required', 'string', 'email', 'max:60', 'exists:users,email']
@@ -31,7 +32,7 @@ class ForgotPasswordController extends Controller
             : response()->json(['message' => 'Unable to send reset link.'], 500);
     }
 
-    public function resetPassword(Request $request)
+    public function resetPassword(Request $request): JsonResponse
     {
         $request->validate([
             'password' => ['required', 'confirmed', Rules\Password::defaults()]

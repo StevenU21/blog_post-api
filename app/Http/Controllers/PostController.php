@@ -50,7 +50,7 @@ class PostController extends Controller
         return new PostResource($post);
     }
 
-    public function auth_user_posts(Request $request)
+    public function auth_user_posts(Request $request): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Post::class);
 

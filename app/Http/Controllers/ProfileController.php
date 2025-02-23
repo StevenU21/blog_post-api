@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Http\Resources\UserResource;
 use App\Services\ImageService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class ProfileController extends Controller
         return new UserResource($user);
     }
 
-    public function updateProfile(Request $request, ImageService $imageService)
+    public function updateProfile(Request $request, ImageService $imageService): JsonResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:60'],
@@ -51,7 +52,7 @@ class ProfileController extends Controller
         return response()->json(['message' => 'Profile Update']);
     }
 
-    public function updatePassword(Request $request)
+    public function updatePassword(Request $request): JsonResponse
     {
         $request->validate([
             'current_password' => 'required',
