@@ -15,6 +15,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+// Auth Routes
 Route::post('/register', [RegisterController::class, 'register'])->name('register');
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware(['auth:sanctum', 'signed'])->name('verification.verify');

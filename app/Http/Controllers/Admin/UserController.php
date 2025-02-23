@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Profile;
@@ -81,7 +82,10 @@ class UserController extends Controller
 
     public function destroy(User $user): JsonResponse
     {
+        $this->authorize('destroy', $user);
+
         $user->delete();
+        
         return response()->json(['message' => 'Resource was Deleted'], 200);
     }
 }

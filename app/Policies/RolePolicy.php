@@ -14,14 +14,4 @@ class RolePolicy
     {
         return $this->checkPermission($user, 'read roles');
     }
-
-    public function view(User $user): bool
-    {
-        return $this->checkPermission($user, 'read roles');
-    }
-
-    public function assignRole(User $user): bool
-    {
-        return $this->checkPermission($user, 'assign roles');
-    }
 }
