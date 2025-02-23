@@ -23,19 +23,23 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.reset');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-
+    // Logout Route
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+    // Categories Routes
     Route::get('/categories/{category}/posts', [CategoryController::class, 'category_posts'])->name('categories.post');
     Route::apiResource('categories', CategoryController::class);
 
+    // Labels Routes
     Route::get('/labels/{label}/posts', [LabelController::class, 'label_posts'])->name('labels.post');
     Route::apiResource('labels', LabelController::class);
 
+    // Posts Routes
     Route::get('/user/{user}/posts', [PostController::class, 'user_posts'])->name('posts.user');
     Route::get('/user/posts', [PostController::class, 'auth_user_posts'])->name('posts.auth.user');
     Route::apiResource('posts', PostController::class)->middlewareFor('show', 'track.views');
 
+    // Comments Routes
     Route::prefix('/comments')->name('comments.')->group(function () {
         Route::get('/', [CommentController::class, 'index'])->name('index');
         Route::get('/post/{post}', [CommentController::class, 'post_comments'])->name('post');
@@ -44,6 +48,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::delete('/{comment}', [CommentController::class, 'destroy'])->name('destroy');
     });
 
+    // Replies Routes
     Route::prefix('/replies')->name('comments.')->group(function () {
         Route::get('/', [CommentReplyController::class, 'index']);
         Route::get('/comments/{comment}', [CommentReplyController::class, 'commentReplies']);
@@ -53,19 +58,22 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::delete('/{reply}/destroy', [CommentReplyController::class, 'destroy']);
     });
 
-    Route::apiResource('users', UserController::class)->only('index', 'show');
-
+    // Profile Routes
     Route::prefix('/profile')->name('profile.')->group(function () {
         Route::get('/users/index', [ProfileController::class, 'profile'])->name('profile');
         Route::put('/update', [ProfileController::class, 'updateProfile']);
         Route::put('/password', [ProfileController::class, 'updatePassword']);
     });
 
+    // Admin Routes
     Route::middleware('role:admin')->prefix('/admin')->name('admin.')->group(function () {
-        // Role routes
-        Route::get('/roles', [RoleController::class, 'index'])->name('index');
-        Route::put('/roles/{user}/assign-role', [RoleController::class, 'assignRole'])->name('assign-role');
-        // Permission routes
+        // Roles
+        Route::get('/roles', RoleController::class);
+
+        //Manage User
+        Route::apiResource('users', UserController::class);
+
+        // Permissions
         Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
         Route::get('/permissions/{user}/list-permission', [PermissionController::class, 'getUserPermissions'])->name('permissions.list-permission');
         Route::post('/permissions/{user}/give-permission', [PermissionController::class, 'assignPermission'])->name('permissions.give-permission');

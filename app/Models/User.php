@@ -52,6 +52,16 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function ($user) {
+            $user->roles()->detach();
+            $user->permissions()->detach();
+        });
+    }
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
