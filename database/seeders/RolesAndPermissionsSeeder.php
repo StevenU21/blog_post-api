@@ -16,13 +16,12 @@ class RolesAndPermissionsSeeder extends Seeder
         'comments' => [],
         'replies' => [],
         'users' => [],
-        'profiles' => [],
+        'profiles' => ['read', 'update'],
         'roles' => ['read'],
         'permissions' => ['read']
     ];
 
     const SPECIAL_PERMISSIONS = [
-        'roles' => ['assign roles'],
         'permissions' => ['assign permissions', 'revoke permissions']
     ];
 

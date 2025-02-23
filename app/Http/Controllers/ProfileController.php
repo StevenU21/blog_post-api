@@ -18,6 +18,7 @@ class ProfileController extends Controller
     public function profile(): UserResource
     {
         $user = Auth::user();
+        $this->authorize('view', $user);
 
         $user->load(['roles.permissions', 'profile']);
 
@@ -26,15 +27,18 @@ class ProfileController extends Controller
 
     public function updateProfile(Request $request, ImageService $imageService): JsonResponse
     {
+        $user = auth()->user();
+
+        $this->authorize('update', $user);
+
+        $profile = auth()->user()->profile;
+
         $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:60'],
             'biography' => ['nullable', 'string', 'min:3', 'max:60'],
             'receive_notifications' => ['nullable', 'in:true,false'],
             'profile_picture' => ['nullable', 'image', 'mimes:jpg,png,jpeg,webp', 'max:4096'],
         ]);
-
-        $user = auth()->user();
-        $profile = auth()->user()->profile;
 
         $user->update($request->only(['name']));
 
@@ -54,12 +58,13 @@ class ProfileController extends Controller
 
     public function updatePassword(Request $request): JsonResponse
     {
+        $user = auth()->user();
+        $this->authorize('update', $user);
+
         $request->validate([
             'current_password' => 'required',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
-
-        $user = auth()->user();
 
         if (!Hash::check($request->current_password, $user->password)) {
             return response()->json(['error' => 'Current Password is Incorrect'], 403);
