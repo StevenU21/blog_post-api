@@ -11,9 +11,9 @@ class ProfilePolicy
 {
     use HandlesAuthorization, HasPermissionCheck;
 
-    public function view(User $user): bool
+    public function view(User $user, Profile $profile): bool
     {
-        return $this->checkPermission($user, 'read profiles');
+        return $this->checkPermission($user, 'read profiles', $profile);
     }
 
     public function update(User $user, Profile $profile): bool

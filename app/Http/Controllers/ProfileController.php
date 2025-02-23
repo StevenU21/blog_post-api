@@ -17,9 +17,10 @@ class ProfileController extends Controller
 
     public function profile(): UserResource
     {
-        $user = Auth::user();
-        $this->authorize('view', $user);
+        $profile = auth()->user()->profile;
+        $this->authorize('view', $profile);
 
+        $user = Auth::user();
         $user->load(['roles.permissions', 'profile']);
 
         return new UserResource($user);
@@ -28,8 +29,9 @@ class ProfileController extends Controller
     public function updateProfile(Request $request, ImageService $imageService): JsonResponse
     {
         $user = auth()->user();
+        $profile = auth()->user()->profile;
 
-        $this->authorize('update', $user);
+        $this->authorize('update', $profile);
 
         $profile = auth()->user()->profile;
 
@@ -59,7 +61,8 @@ class ProfileController extends Controller
     public function updatePassword(Request $request): JsonResponse
     {
         $user = auth()->user();
-        $this->authorize('update', $user);
+        $profile = auth()->user()->profile;
+        $this->authorize('update', $profile);
 
         $request->validate([
             'current_password' => 'required',
