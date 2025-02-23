@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use App\Models\User;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Http\Request;
 
 class PermissionController extends Controller
 {

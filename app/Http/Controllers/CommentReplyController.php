@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CommentReplyRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Http\Resources\CommentReplyResource;
+use Illuminate\Http\JsonResponse;
 use App\Models\Comment;
 use App\Models\CommentReply;
-use Illuminate\Http\JsonResponse;
+use App\Http\Requests\CommentReplyRequest;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class CommentReplyController extends Controller
 {
