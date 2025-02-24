@@ -33,8 +33,6 @@ class ProfileController extends Controller
 
         $this->authorize('update', $profile);
 
-        $profile = auth()->user()->profile;
-
         $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:60'],
             'biography' => ['nullable', 'string', 'min:3', 'max:60'],
@@ -62,6 +60,7 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
         $profile = auth()->user()->profile;
+        
         $this->authorize('update', $profile);
 
         $request->validate([
