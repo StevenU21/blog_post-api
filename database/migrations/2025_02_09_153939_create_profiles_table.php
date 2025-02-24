@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('profiles', function (Blueprint $table) {
             $table->increments('id');
-            $table->longText('biography');
+            $table->longText('biography')->nullable();
             $table->boolean('receive_notifications')->default('false');
             $table->string('profile_picture')->nullable();
 

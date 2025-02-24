@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Http\Resources\UserResource;
@@ -34,7 +35,7 @@ class UserController extends Controller
         return new UserResource($user);
     }
 
-    public function store(UserRequest $request): UserResource
+    public function store(UserRequest $request)
     {
         $user = User::create($request->validated() + [
             'password' => Hash::make($request->password),
@@ -49,13 +50,13 @@ class UserController extends Controller
         $user->assignRole($role);
 
         return response()->json([
-            'message' => 'User Updated Successfully',
+            'message' => 'User Created Successfully',
             'user' => new UserResource($user),
             'role' => $role,
         ]);
     }
 
-    public function update(UserRequest $request, User $user): JsonResponse
+    public function update(UserRequest $request, User $user)
     {
         $request->validate([
             'role' => 'required|exists:roles,name',
@@ -65,7 +66,7 @@ class UserController extends Controller
 
         $role = $request->input('role');
 
-        if (is_array($role)) {
+        if (is_array($role)) {  
             return response()->json([
                 'message' => 'Only one role can be assigned at a time',
             ], 400);
@@ -74,7 +75,7 @@ class UserController extends Controller
         $user->syncRoles($role);
 
         return response()->json([
-            'message' => 'User Updated Successfully',
+            'message' => 'User Created Successfully',
             'user' => new UserResource($user),
             'role' => $role,
         ]);
