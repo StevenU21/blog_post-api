@@ -24,6 +24,10 @@ class PostPolicy
      */
     public function view(User $user, Post $post): bool
     {
+        if ($post->status == 'draft' && $post->user_id !== auth()->id()) {
+            abort(404);
+        }
+
         return $this->checkPermission($user, 'read posts');
     }
 

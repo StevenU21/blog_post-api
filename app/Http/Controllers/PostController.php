@@ -43,10 +43,6 @@ class PostController extends Controller
     {
         $this->authorize('view', $post);
 
-        if ($post->status == 'draft' && $post->user_id !== auth()->id()) {
-            abort(404, 'Post not found');
-        }
-
         return new PostResource($post);
     }
 
