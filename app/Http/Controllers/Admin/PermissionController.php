@@ -40,8 +40,8 @@ class PermissionController extends Controller
         $this->authorize('assignPermissions', Permission::class);
 
         $request->validate([
-            'permission' => 'required|array',
-            'permission.*' => 'exists:permissions,name',
+            'permission' => ['required', 'array'],
+            'permission.*' => ['exists:permissions,name'],
         ]);
 
         $permissions = $request->input('permission');
@@ -61,8 +61,8 @@ class PermissionController extends Controller
         $this->authorize('revokePermissions', Permission::class);
 
         $request->validate([
-            'permission' => 'required|array',
-            'permission.*' => 'exists:permissions,name',
+            'permission' => ['required', 'array'],
+            'permission.*' => ['exists:permissions,name'],
         ]);
 
         $permissions = $request->input('permission');

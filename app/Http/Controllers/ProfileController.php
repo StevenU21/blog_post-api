@@ -60,11 +60,11 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
         $profile = auth()->user()->profile;
-        
+
         $this->authorize('update', $profile);
 
         $request->validate([
-            'current_password' => 'required',
+            'current_password' => ['required'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
