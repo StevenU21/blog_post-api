@@ -30,7 +30,7 @@ class CommentController extends Controller
         return CommentResource::collection($comments);
     }
 
-    public function post_comments(Request $request, int $postId): AnonymousResourceCollection
+    public function postComments(Request $request, int $postId): AnonymousResourceCollection
     {
         $post = Post::findOrFail($postId);
         $this->authorize('viewAny', $post);

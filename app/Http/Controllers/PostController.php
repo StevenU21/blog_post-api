@@ -28,7 +28,7 @@ class PostController extends Controller
         return PostResource::collection($posts);
     }
 
-    public function user_posts(Request $request, User $user): AnonymousResourceCollection
+    public function userPosts(Request $request, User $user): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Post::class);
 
@@ -50,7 +50,7 @@ class PostController extends Controller
         return new PostResource($post);
     }
 
-    public function auth_user_posts(Request $request): AnonymousResourceCollection
+    public function authUserPosts(Request $request): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Post::class);
 

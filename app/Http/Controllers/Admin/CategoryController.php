@@ -27,7 +27,7 @@ class CategoryController extends Controller
         return CategoryResource::collection($categories);
     }
 
-    public function category_posts(Category $category): AnonymousResourceCollection
+    public function categoryPosts(Category $category): AnonymousResourceCollection
     {
         $this->authorize('view', $category);
 

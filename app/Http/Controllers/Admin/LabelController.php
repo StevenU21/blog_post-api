@@ -28,7 +28,7 @@ class LabelController extends Controller
         return LabelResource::collection($labels);
     }
 
-    public function label_posts(Label $label): AnonymousResourceCollection
+    public function labelPosts(Label $label): AnonymousResourceCollection
     {
         $this->authorize('view', $label);
 

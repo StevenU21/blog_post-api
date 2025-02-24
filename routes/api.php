@@ -28,22 +28,22 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     // Categories Routes
-    Route::get('/categories/{category}/posts', [CategoryController::class, 'category_posts'])->name('categories.post');
+    Route::get('/categories/{category}/posts', [CategoryController::class, 'categoryPosts'])->name('categories.post');
     Route::apiResource('categories', CategoryController::class);
 
     // Labels Routes
-    Route::get('/labels/{label}/posts', [LabelController::class, 'label_posts'])->name('labels.post');
+    Route::get('/labels/{label}/posts', [LabelController::class, 'labelPosts'])->name('labels.post');
     Route::apiResource('labels', LabelController::class);
 
     // Posts Routes
-    Route::get('/user/{user}/posts', [PostController::class, 'user_posts'])->name('posts.user');
-    Route::get('/user/posts', [PostController::class, 'auth_user_posts'])->name('posts.auth.user');
+    Route::get('/user/{user}/posts', [PostController::class, 'userPosts'])->name('posts.user');
+    Route::get('/user/posts', [PostController::class, 'authUserPosts'])->name('posts.auth.user');
     Route::apiResource('posts', PostController::class)->middlewareFor('show', 'track.views');
 
     // Comments Routes
     Route::prefix('/comments')->name('comments.')->group(function () {
         Route::get('/', [CommentController::class, 'index'])->name('index');
-        Route::get('/post/{post}', [CommentController::class, 'post_comments'])->name('post');
+        Route::get('/post/{post}', [CommentController::class, 'postComments'])->name('post');
         Route::post('/post/{post}', [CommentController::class, 'store'])->name('post.store');
         Route::put('/{comment}', [CommentController::class, 'update'])->name('update');
         Route::delete('/{comment}', [CommentController::class, 'destroy'])->name('destroy');
