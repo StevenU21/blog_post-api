@@ -117,7 +117,7 @@ return [
         'secret' => env('ALGOLIA_SECRET'),
         'index-settings' => [
             Post::class => [
-                'searchableAttributes' => ['title', 'author', 'cover_image', 'category'],
+                'searchableAttributes' => ['title', 'author', 'category'],
                 'attributesForFaceting'=> ['filterOnly(category)'],
             ],
         ],

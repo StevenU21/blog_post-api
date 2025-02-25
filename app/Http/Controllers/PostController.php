@@ -30,12 +30,29 @@ class PostController extends Controller
         return PostResource::collection($posts);
     }
 
+    public function search(Request $request): AnonymousResourceCollection
+    {
+        $query = $request->input('query');
+
+        if (!$query) {
+            return response()->json([
+                'message' => 'You must provide a search term.'
+            ], 400);
+        }
+
+        $posts = Post::search($query)->paginate(10);
+
+        $posts->load(['user', 'category', 'tags', 'media']);
+
+        return PostResource::collection($posts);
+    }
+
     public function userPosts(Request $request, User $user): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Post::class);
 
         $per_page = $request->get('per_page', 5);
-        
+
         $posts = $user->posts()->where('status', 'published')
             ->with('user', 'category', 'tags', 'media')
             ->paginate($per_page);

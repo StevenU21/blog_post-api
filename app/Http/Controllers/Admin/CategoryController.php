@@ -32,7 +32,7 @@ class CategoryController extends Controller
         $this->authorize('view', $category);
 
         $posts = Post::where('category_id', '=', $category->id)
-            ->with('user', 'category', 'labels', 'media')
+            ->with('user', 'category', 'tags', 'media')
             ->latest()
             ->paginate(10);
 

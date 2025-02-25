@@ -38,6 +38,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     // Posts Routes
     Route::get('/user/{user}/posts', [PostController::class, 'userPosts'])->name('posts.user');
     Route::get('/user/posts', [PostController::class, 'authUserPosts'])->name('posts.auth.user');
+    Route::get('/posts/search', [PostController::class, 'search']);
     Route::apiResource('posts', PostController::class)->middlewareFor('show', 'track.views');
 
     // Comments Routes
