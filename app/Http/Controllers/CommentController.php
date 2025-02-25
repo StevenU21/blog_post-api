@@ -30,14 +30,13 @@ class CommentController extends Controller
         return CommentResource::collection($comments);
     }
 
-    public function postComments(Request $request, int $postId): AnonymousResourceCollection
+    public function postComments(Request $request, Post $post): AnonymousResourceCollection
     {
-        $post = Post::findOrFail($postId);
         $this->authorize('viewAny', $post);
 
         $order_by = $request->get('order_by', 'asc');
 
-        $comments = Comment::where('post_id', '=', $postId)
+        $comments = Comment::where('post_id', '=', $post->id)
             ->with('user', 'post')
             ->orderBy('created_at', $order_by)
             ->get();
@@ -45,11 +44,11 @@ class CommentController extends Controller
         return CommentResource::collection($comments);
     }
 
-    public function store(CommentRequest $request, int $postId): CommentResource
+    public function store(CommentRequest $request, Post $post): CommentResource
     {
         $comment = Comment::create($request->validated() + [
             'user_id' => Auth::id(),
-            'post_id' => $postId,
+            'post_id' => $post->id,
         ]);
 
         return new CommentResource($comment);
@@ -62,9 +61,8 @@ class CommentController extends Controller
         return new CommentResource($comment);
     }
 
-    public function destroy(int $commentId): JsonResponse
+    public function destroy(Comment $comment): JsonResponse
     {
-        $comment = Comment::findOrFail($commentId);
         $this->authorize('destroy', $comment);
 
         $comment->delete();
