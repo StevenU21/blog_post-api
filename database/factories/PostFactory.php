@@ -38,11 +38,4 @@ class PostFactory extends Factory
             })->first()->id,
         ];
     }
-
-    public function withLabels(array $tags): self
-    {
-        return $this->afterCreating(function (Post $post) use ($tags) {
-            $post->tags()->sync($tags);
-        });
-    }
 }

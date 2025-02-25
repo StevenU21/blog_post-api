@@ -22,10 +22,37 @@ class PostController extends Controller
     {
         $this->authorize('viewAny', Post::class);
 
-        $per_page = $request->get('per_page', 10);
-        $posts = Post::where('status', 'published')
-            ->with('user', 'category', 'tags', 'media')
-            ->paginate($per_page);
+        if ($request->has('search')) {
+            return $this->search($request);
+        }
+
+        $query = Post::where('status', 'published')
+            ->with(['user', 'category', 'tags', 'media']);
+
+        if ($request->has('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        if ($request->has('user')) {
+            $query->where('user_id', $request->user);
+        }
+
+        if ($request->has('tags')) {
+            $tags = $request->get('tags');
+            $tagsArray = is_array($tags) ? $tags : explode(',', $tags);
+            $query->whereHas('tags', function ($q) use ($tagsArray) {
+                $q->whereIn('tag_id', $tagsArray);
+            });
+        }
+
+        if ($request->has('sort_order')) {
+            $sort_order = $request->get('sort_order');
+            $query->orderBy('created_at', $sort_order);
+        }
+
+        $perPage = $request->get('per_page', 10);
+
+        $posts = $query->paginate($perPage);
 
         return PostResource::collection($posts);
     }

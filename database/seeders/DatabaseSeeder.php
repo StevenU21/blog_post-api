@@ -59,11 +59,13 @@ class DatabaseSeeder extends Seeder
         ]);
         $readerUser->assignRole('reader');
 
-        Category::factory(10)->create();
-        Tag::factory(20)->create();
+        Category::factory(5)->create();
+        Tag::factory(10)->create();
 
-        $tags = Tag::inRandomOrder()->take(rand(1, 5))->pluck('id')->toArray();
-        Post::factory(100)->withLabels($tags)->create();
+        Post::factory(100)->create()->each(function ($post) {
+            $tags = Tag::inRandomOrder()->take(rand(1, 5))->pluck('id')->toArray();
+            $post->tags()->attach($tags);
+        });
 
         Comment::factory(100)->create();
         $replies = CommentReply::factory(300)->create();
