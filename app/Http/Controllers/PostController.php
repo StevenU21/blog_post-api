@@ -23,6 +23,7 @@ class PostController extends Controller
 
         $per_page = $request->get('per_page', 10);
         $posts = Post::where('status', 'published')
+            ->with('user', 'category', 'labels', 'media')
             ->paginate($per_page);
 
         return PostResource::collection($posts);
@@ -34,6 +35,7 @@ class PostController extends Controller
 
         $per_page = $request->get('per_page', 5);
         $posts = $user->posts()->where('status', 'published')
+            ->with('user', 'category', 'labels', 'media')
             ->paginate($per_page);
 
         return PostResource::collection($posts);
@@ -48,16 +50,17 @@ class PostController extends Controller
 
         $posts = auth()->user()->posts()
             ->where('status', '=', $status)
+            ->with('user', 'category', 'labels', 'media')
             ->paginate($per_page);
 
         return PostResource::collection($posts);
     }
 
-    public function show(Post $post)
+    public function show(Post $post): PostResource
     {
         $this->authorize('view', $post);
 
-        return new PostResource($post);
+        return new PostResource($post->load('user', 'category', 'labels', 'media'));
     }
 
     public function store(PostRequest $request, ImageService $imageService): PostResource
