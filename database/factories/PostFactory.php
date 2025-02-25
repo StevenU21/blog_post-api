@@ -39,10 +39,10 @@ class PostFactory extends Factory
         ];
     }
 
-    public function withLabels(array $labels): self
+    public function withLabels(array $tags): self
     {
-        return $this->afterCreating(function (Post $post) use ($labels) {
-            $post->labels()->sync($labels);
+        return $this->afterCreating(function (Post $post) use ($tags) {
+            $post->tags()->sync($tags);
         });
     }
 }

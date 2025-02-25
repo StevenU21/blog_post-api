@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Http\Resources\UserResource;
@@ -66,7 +65,7 @@ class UserController extends Controller
 
         $role = $request->input('role');
 
-        if (is_array($role)) {  
+        if (is_array($role)) {
             return response()->json([
                 'message' => 'Only one role can be assigned at a time',
             ], 400);

@@ -7,9 +7,9 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\LabelController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommentReplyController;
 use App\Http\Controllers\PostController;
@@ -32,8 +32,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::apiResource('categories', CategoryController::class);
 
     // Labels Routes
-    Route::get('/labels/{label}/posts', [LabelController::class, 'labelPosts'])->name('labels.post');
-    Route::apiResource('labels', LabelController::class);
+    Route::get('/tags/{tag}/posts', [TagController::class, 'tagPosts'])->name('tags.post');
+    Route::apiResource('tags', TagController::class);
 
     // Posts Routes
     Route::get('/user/{user}/posts', [PostController::class, 'userPosts'])->name('posts.user');

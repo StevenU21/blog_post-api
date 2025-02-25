@@ -59,8 +59,8 @@ class Post extends Model implements HasMedia
         return asset('storage/' . $this->cover_image);
     }
 
-    public function labels(): BelongsToMany
+    public function tags(): BelongsToMany
     {
-        return $this->belongsToMany(Label::class);
+        return $this->belongsToMany(Tag::class);
     }
 }

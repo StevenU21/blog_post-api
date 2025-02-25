@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\CommentReply;
-use App\Models\Label;
+use App\Models\Tag;
 use App\Models\Post;
 use App\Models\Profile;
 use App\Models\User;
@@ -60,10 +60,10 @@ class DatabaseSeeder extends Seeder
         $readerUser->assignRole('reader');
 
         Category::factory(10)->create();
-        Label::factory(20)->create();
+        Tag::factory(20)->create();
 
-        $labels = Label::inRandomOrder()->take(rand(1, 5))->pluck('id')->toArray();
-        Post::factory(100)->withLabels($labels)->create();
+        $tags = Tag::inRandomOrder()->take(rand(1, 5))->pluck('id')->toArray();
+        Post::factory(100)->withLabels($tags)->create();
 
         Comment::factory(100)->create();
         $replies = CommentReply::factory(300)->create();

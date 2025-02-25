@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Comment;
+use App\Models\Post;
 use App\Models\User;
 use App\Traits\HasPermissionCheck;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -22,7 +23,7 @@ class CommentPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Comment $comment): bool
+    public function view(User $user, Post $post): bool
     {
         return $this->checkPermission($user, 'read comments');
     }

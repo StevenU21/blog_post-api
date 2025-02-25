@@ -32,14 +32,18 @@ class CommentController extends Controller
 
     public function postComments(Request $request, Post $post): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', $post);
+        $this->authorize('view', $post);
+
+        $request->validate([
+            'order_by' => ['in:asc,desc']
+        ]);
 
         $order_by = $request->get('order_by', 'asc');
 
-        $comments = Comment::where('post_id', '=', $post->id)
-            ->with('user', 'post')
+        $comments = Comment::where('post_id', $post->id)
+            ->with('user')
             ->orderBy('created_at', $order_by)
-            ->get();
+            ->paginate(10);
 
         return CommentResource::collection($comments);
     }

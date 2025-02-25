@@ -10,14 +10,14 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('label_post', function (Blueprint $table) {
-            $table->integer('label_id')->unsigned();
-            $table->foreign('label_id')->references('id')->on('labels')->onDelete('cascade')->onUpdate('cascade');
-
+        Schema::create('post_tag', function (Blueprint $table) {
             $table->integer('post_id')->unsigned();
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade')->onUpdate('cascade');
 
-            $table->index(['post_id', 'label_id']);
+            $table->integer('tag_id')->unsigned();
+            $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade')->onUpdate('cascade');
+
+            $table->index(['post_id', 'tag_id']);
             $table->timestamps();
         });
     }

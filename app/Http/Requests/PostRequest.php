@@ -39,8 +39,8 @@ class PostRequest extends FormRequest
             'images' => ['array', 'min:1', 'max:10'],
             'images.*' => ['nullable', 'image', 'mimes:jpg,png,jpeg,webp', 'max:4096'],
             'category_id' => ['required', 'exists:categories,id'],
-            'labels' => ['required', 'array', 'min:1', 'max:5'],
-            'labels.*' => ['distinct', 'exists:labels,id']
+            'tags' => ['required', 'array', 'min:1', 'max:5'],
+            'tags.*' => ['distinct', 'exists:tags,id']
         ];
     }
 }

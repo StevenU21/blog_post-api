@@ -11,7 +11,7 @@ class RolesAndPermissionsSeeder extends Seeder
 {
     const PERMISSIONS = [
         'categories' => [],
-        'labels' => [],
+        'tags' => [],
         'posts' => [],
         'comments' => [],
         'replies' => [],
@@ -65,7 +65,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $writerPermissions = array_merge(
             $this->filterPermissions('categories')->only(['read categories'])->get(),
-            $this->filterPermissions('labels')->remove(['destroy labels'])->get(),
+            $this->filterPermissions('tags')->remove(['destroy tags'])->get(),
             $this->filterPermissions('posts')->get(),
             $this->filterPermissions('comments')->get(),
             $this->filterPermissions('replies')->get(),
@@ -76,7 +76,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $readerPermissions = array_merge(
             $this->filterPermissions('categories')->only(['read categories'])->get(),
-            $this->filterPermissions('labels')->only(['read labels'])->get(),
+            $this->filterPermissions('tags')->only(['read tags'])->get(),
             $this->filterPermissions('posts')->only(['read posts'])->get(),
             $this->filterPermissions('comments')->get(),
             $this->filterPermissions('replies')->get(),

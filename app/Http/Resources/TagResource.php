@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LabelResource extends JsonResource
+class TagResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,7 +20,7 @@ class LabelResource extends JsonResource
             'id' => $this->when($user && $user->hasRole('admin') && $request->has('include_id'), $this->id),
             'slug' => $this->slug,
             'name' => $this->name,
-            'created_at' => $this->created_at->isoFormat('DD-MM-YYYY HH:mm:ss'), 
+            'created_at' => $this->created_at->isoFormat('DD-MM-YYYY HH:mm:ss'),
         ];
     }
 }

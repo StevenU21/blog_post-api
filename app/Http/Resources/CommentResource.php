@@ -18,8 +18,7 @@ class CommentResource extends JsonResource
             'id' => $this->id,
             'content' => $this->content,
             'user' => $this->user->name,
-            'post' => $this->post->title,
-            'created_at' => $this->created_at->isoFormat('DD-MM-YYYY HH:mm:ss'), 
+            'created_at' => $this->created_at->isoFormat('DD-MM-YYYY HH:mm:ss'),
         ];
     }
 }

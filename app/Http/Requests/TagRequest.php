@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Label;
+use App\Models\Tag;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class LabelRequest extends FormRequest
+class TagRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,11 +14,11 @@ class LabelRequest extends FormRequest
     public function authorize(): bool
     {
         if ($this->isMethod('post')) {
-            return $this->user()->can('create', Label::class);
+            return $this->user()->can('create', Tag::class);
         }
 
         if ($this->isMethod('put') || $this->isMethod('patch')) {
-            return $this->user()->can('update', $this->route('label'));
+            return $this->user()->can('update', $this->route('tag'));
         }
 
         return false;
@@ -32,7 +32,7 @@ class LabelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:3', 'max:20', Rule::unique('labels')->ignore($this->label)]
+            'name' => ['required', 'string', 'min:3', 'max:20', Rule::unique('tags')->ignore($this->tag)]
         ];
     }
 }

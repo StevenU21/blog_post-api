@@ -30,10 +30,10 @@ class PostResource extends JsonResource
                 'slug' => $this->user->slug,
                 'name' => $this->user->name
             ],
-            'labels' => $this->labels->map(function ($label) {
+            'tags' => $this->tags->map(function ($tag) {
                 return [
-                    'slug' => $label->slug,
-                    'name' => $label->name
+                    'slug' => $tag->slug,
+                    'name' => $tag->name
                 ];
             }),
             'images' => $this->getMedia('post_images')->map(function ($image) {

@@ -24,7 +24,7 @@ class PostController extends Controller
 
         $per_page = $request->get('per_page', 10);
         $posts = Post::where('status', 'published')
-            ->with('user', 'category', 'labels', 'media')
+            ->with('user', 'category', 'tags', 'media')
             ->paginate($per_page);
 
         return PostResource::collection($posts);
@@ -36,7 +36,7 @@ class PostController extends Controller
 
         $per_page = $request->get('per_page', 5);
         $posts = $user->posts()->where('status', 'published')
-            ->with('user', 'category', 'labels', 'media')
+            ->with('user', 'category', 'tags', 'media')
             ->paginate($per_page);
 
         return PostResource::collection($posts);
@@ -51,7 +51,7 @@ class PostController extends Controller
 
         $posts = auth()->user()->posts()
             ->where('status', '=', $status)
-            ->with('user', 'category', 'labels', 'media')
+            ->with('user', 'category', 'tags', 'media')
             ->paginate($per_page);
 
         return PostResource::collection($posts);
@@ -61,7 +61,7 @@ class PostController extends Controller
     {
         $this->authorize('view', $post);
 
-        return new PostResource($post->load('user', 'category', 'labels', 'media'));
+        return new PostResource($post->load('user', 'category', 'tags', 'media'));
     }
 
     public function store(PostRequest $request, ImageService $imageService): PostResource
@@ -70,7 +70,7 @@ class PostController extends Controller
             'user_id' => Auth::id()
         ]);
 
-        $post->labels()->sync($request->labels);
+        $post->tags()->sync($request->tags);
 
         $imageService->storeLocal(
             $post,
@@ -100,7 +100,7 @@ class PostController extends Controller
     {
         $post->update($request->validated());
 
-        $post->labels()->sync($request->labels);
+        $post->tags()->sync($request->tags);
 
         if ($request->hasFile('cover_image')) {
             $imageService->updateLocal(
@@ -120,7 +120,7 @@ class PostController extends Controller
             );
         }
 
-        return new PostResource($post->load('user', 'category', 'labels', 'media'));
+        return new PostResource($post->load('user', 'category', 'tags', 'media'));
     }
 
     public function destroy(Post $post, ImageService $imageService): JsonResponse
