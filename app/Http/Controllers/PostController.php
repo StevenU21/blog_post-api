@@ -39,13 +39,6 @@ class PostController extends Controller
         return PostResource::collection($posts);
     }
 
-    public function show(Post $post)
-    {
-        $this->authorize('view', $post);
-
-        return new PostResource($post);
-    }
-
     public function authUserPosts(Request $request): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Post::class);
@@ -58,6 +51,13 @@ class PostController extends Controller
             ->paginate($per_page);
 
         return PostResource::collection($posts);
+    }
+
+    public function show(Post $post)
+    {
+        $this->authorize('view', $post);
+
+        return new PostResource($post);
     }
 
     public function store(PostRequest $request, ImageService $imageService): PostResource
