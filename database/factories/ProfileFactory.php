@@ -19,7 +19,7 @@ class ProfileFactory extends Factory
     {
         return [
             'biography' => fake()->sentences(6, true),
-            'receive_notifications' => fake()->randomElement(['true', 'false']),
+            'receive_notifications' => fake()->randomElement([true, false]),
             'profile_picture' => fake()->imageUrl(),
             'user_id' => null,
         ];

@@ -83,12 +83,14 @@ class PostController extends Controller
             $imageService->storeMedia($post, $request->file('images'));
         }
 
-        $users = User::with('profile')->get();
-
-        foreach ($users as $user) {
-            if ($user->profile->receive_notifications == true && $post->status == 'published') {
-                $user->notify(new NewPostNotification($post));
-            }
+        if ($post->status == 'published') {
+            User::whereHas('profile', function ($query) {
+                $query->where('receive_notifications', true);
+            })->chunk(100, function ($users) use ($post) {
+                foreach ($users as $user) {
+                    $user->notify(new NewPostNotification($post));
+                }
+            });
         }
 
         return new PostResource($post);

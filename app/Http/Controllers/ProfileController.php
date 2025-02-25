@@ -36,7 +36,7 @@ class ProfileController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:60'],
             'biography' => ['nullable', 'string', 'min:3', 'max:60'],
-            'receive_notifications' => ['nullable', 'in:true,false'],
+            'receive_notifications' => ['nullable', 'boolean', 'in:true,false'],
             'profile_picture' => ['nullable', 'image', 'mimes:jpg,png,jpeg,webp', 'max:4096'],
         ]);
 
