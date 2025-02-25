@@ -44,13 +44,6 @@ class Post extends Model implements HasMedia
             ->nonQueued();
     }
 
-    public function setPublishedAtAttribute($value)
-    {
-        $this
-            ->attributes['published_at'] = $value ? Carbon::createFromFormat('d-m-Y H:i', $value)
-                ->format('Y-m-d H:i:s') : null;
-    }
-
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
