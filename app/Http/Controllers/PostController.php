@@ -76,13 +76,11 @@ class PostController extends Controller
     {
         $this->authorize('viewAny', Post::class);
 
-        $query = $request->input('query');
+        $request->validate([
+            'query' => ['required']
+        ]);
 
-        if (!$query) {
-            return response()->json([
-                'message' => 'You must provide a search term.'
-            ], 400);
-        }
+        $query = $request->get('query');
 
         $posts = Post::search($query)->paginate(10);
 
