@@ -27,7 +27,7 @@ class Comment extends Model
         return $this->belongsTo(Post::class);
     }
 
-    public function comment_replys(): HasMany
+    public function commentReplies(): HasMany
     {
         return $this->hasMany(CommentReply::class);
     }
