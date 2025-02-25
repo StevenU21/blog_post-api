@@ -39,7 +39,7 @@ class PostResource extends JsonResource
             'images' => $this->getMedia('post_images')->map(function ($image) {
                 return $image->getUrl();
             }),
-            'created_at' => $this->created_at->isoFormat('DD-MM-YYYY HH:mm:ss'), 
+            'created_at' => $this->created_at->isoFormat('DD-MM-YYYY HH:mm:ss'),
         ];
     }
 }
