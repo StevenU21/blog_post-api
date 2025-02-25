@@ -1,4 +1,4 @@
-# Blog Post API en Laravel 11
+# Blog Post API en Laravel 12
 
 Una API para gestionar un sistema de blog personal que incluye funcionalidades de autenticación, gestión de categorías, etiquetas, publicaciones, comentarios y administración de usuarios, con control de roles y permisos.
 
@@ -34,7 +34,7 @@ Esta API permite gestionar un blog personal mediante Laravel 11. Utiliza Laravel
 
 - PHP 8.2 >
 - Composer
-- Laravel 11
+- Laravel 12
 - BD (MySQL, SQLite)
 
 ## Instalación
