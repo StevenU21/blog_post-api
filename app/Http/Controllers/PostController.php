@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\Tag;
 use App\Notifications\NewPostNotification;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -30,18 +32,30 @@ class PostController extends Controller
             ->with(['user', 'category', 'tags', 'media']);
 
         if ($request->has('category')) {
-            $query->where('category_id', $request->category);
+            $categorySlug = $request->category;
+            $category = Category::where('slug', $categorySlug)->first();
+            if ($category) {
+                $query->where('category_id', $category->id);
+            }
         }
 
         if ($request->has('user')) {
-            $query->where('user_id', $request->user);
+            $userParam = $request->user;
+            $user = User::where('id', $userParam)
+                ->orWhere('slug', $userParam)
+                ->first();
+            if ($user) {
+                $query->where('user_id', $user->id);
+            }
         }
 
         if ($request->has('tags')) {
             $tags = $request->get('tags');
             $tagsArray = is_array($tags) ? $tags : explode(',', $tags);
-            $query->whereHas('tags', function ($q) use ($tagsArray) {
-                $q->whereIn('tag_id', $tagsArray);
+            $tags = Tag::whereIn('slug', $tagsArray)->get();
+            $tagIds = $tags->pluck('id')->toArray();
+            $query->whereHas('tags', function ($q) use ($tagIds) {
+                $q->whereIn('tag_id', $tagIds);
             });
         }
 
@@ -59,6 +73,8 @@ class PostController extends Controller
 
     public function search(Request $request): AnonymousResourceCollection
     {
+        $this->authorize('viewAny', Post::class);
+
         $query = $request->input('query');
 
         if (!$query) {
