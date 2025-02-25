@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Comment;
 use App\Models\CommentReply;
 use App\Models\User;
 use App\Traits\HasPermissionCheck;
@@ -22,7 +23,7 @@ class CommentReplyPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, CommentReply $commentReply): bool
+    public function view(User $user, Comment $comment): bool
     {
         return $this->checkPermission($user, 'read replies');
     }

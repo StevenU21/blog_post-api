@@ -35,6 +35,7 @@ class PostController extends Controller
         $this->authorize('viewAny', Post::class);
 
         $per_page = $request->get('per_page', 5);
+        
         $posts = $user->posts()->where('status', 'published')
             ->with('user', 'category', 'tags', 'media')
             ->paginate($per_page);

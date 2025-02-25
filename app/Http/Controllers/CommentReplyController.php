@@ -31,7 +31,7 @@ class CommentReplyController extends Controller
 
     public function commentReplies(Comment $comment): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', CommentReply::class);
+        $this->authorize('viewAny', $comment);
 
         $replies = CommentReply::where('comment_id', '=', $comment->id)
             ->with('user')
