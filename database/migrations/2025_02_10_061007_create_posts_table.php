@@ -13,10 +13,11 @@ return new class extends Migration {
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');
-            $table->string('content');
+            $table->longText('content');
             $table->unsignedBigInteger('views')->default(0);
-            $table->enum('status', ['draft', 'published']);
+            $table->enum('status', ['draft', 'published', 'scheduled']);
             $table->string('cover_image');
+            $table->timestamp('published_at')->nullable()->index();
             $table->string('slug');
 
             //Relations

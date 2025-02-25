@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,6 +23,7 @@ class Post extends Model implements HasMedia
         'content',
         'status',
         'cover_image',
+        'published_at',
         'category_id',
         'user_id'
     ];
@@ -34,17 +36,19 @@ class Post extends Model implements HasMedia
             ->doNotGenerateSlugsOnUpdate();
     }
 
-    public function resolveRouteBinding($value, $field = null)
-    {
-        return $this->where($field ?? 'id', $value)->orWhere('slug', $value)->firstOrFail();
-    }
-
     public function registerMediaConversions(?Media $media = null): void
     {
         $this
             ->addMediaConversion('preview')
             ->fit(Fit::Contain, 300, 300)
             ->nonQueued();
+    }
+
+    public function setPublishedAtAttribute($value)
+    {
+        $this
+            ->attributes['published_at'] = $value ? Carbon::createFromFormat('d-m-Y H:i', $value)
+                ->format('Y-m-d H:i:s') : null;
     }
 
     public function category(): BelongsTo

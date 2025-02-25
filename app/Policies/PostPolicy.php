@@ -24,7 +24,7 @@ class PostPolicy
      */
     public function view(User $user, Post $post): bool
     {
-        if ($post->status == 'draft' && $post->user_id !== auth()->id()) {
+        if (in_array($post->status, ['draft', 'scheduled']) && $post->user_id !== $user->id) {
             abort(404);
         }
 

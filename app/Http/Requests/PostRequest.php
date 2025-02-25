@@ -33,13 +33,14 @@ class PostRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'min:4', 'max:120'],
             'content' => ['required', 'string', 'min:6', 'max:10000'],
-            'status' => ['required', 'in:draft,published'],
+            'status' => ['required', 'in:draft,published,scheduled'],
             'cover_image' => ['required', 'image', 'mimes:jpg,png,jpeg,webp', 'max:4096'],
-            'images' => ['nullable', 'array', 'min:1', 'max:10'],
+            'published_at' => ['nullable', 'date', 'after_or_equal:now', 'required_if:status,scheduled'],
+            'images' => ['array', 'min:1', 'max:10'],
             'images.*' => ['nullable', 'image', 'mimes:jpg,png,jpeg,webp', 'max:4096'],
             'category_id' => ['required', 'exists:categories,id'],
             'labels' => ['required', 'array', 'min:1', 'max:5'],
-            'labels.*' => ['required', 'string', 'distinct', 'exists:labels,id']
+            'labels.*' => ['distinct', 'exists:labels,id']
         ];
     }
 }
