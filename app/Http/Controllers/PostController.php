@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\NewPostNotification;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Http\Resources\PostResource;
@@ -80,6 +81,14 @@ class PostController extends Controller
 
         if ($request->hasFile('images')) {
             $imageService->storeMedia($post, $request->file('images'));
+        }
+
+        $users = User::with('profile')->get();
+
+        foreach ($users as $user) {
+            if ($user->profile->receive_notifications == true && $post->status == 'published') {
+                $user->notify(new NewPostNotification($post));
+            }
         }
 
         return new PostResource($post);
