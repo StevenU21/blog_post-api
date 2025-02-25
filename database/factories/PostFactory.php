@@ -25,7 +25,7 @@ class PostFactory extends Factory
             'content' => fake()->sentence(6),
             'views' => fake()->numberBetween(1, 1000),
             'status' => fake()->randomElement(['draft', 'published', 'scheduled']),
-            'cover_image' => fake()->imageUrl(),
+            'cover_image' => 'https://media.sproutsocial.com/uploads/2022/05/How-to-post-on-instagram-from-pc.jpg',
             'published_at' => function (array $attributes) {
                 if ($attributes['status'] === 'scheduled') {
                     return Carbon::tomorrow()->addDays(rand(1, 30));

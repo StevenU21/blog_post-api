@@ -113,13 +113,13 @@ return [
     */
 
     'algolia' => [
-        'id' => env('ALGOLIA_APP_ID', ''),
-        'secret' => env('ALGOLIA_SECRET', ''),
+        'id' => env('ALGOLIA_APP_ID'),
+        'secret' => env('ALGOLIA_SECRET'),
         'index-settings' => [
-            // 'users' => [
-            //     'searchableAttributes' => ['id', 'name', 'email'],
-            //     'attributesForFaceting'=> ['filterOnly(email)'],
-            // ],
+            Post::class => [
+                'searchableAttributes' => ['title', 'author', 'cover_image', 'category'],
+                'attributesForFaceting'=> ['filterOnly(category)'],
+            ],
         ],
     ],
 
