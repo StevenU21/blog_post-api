@@ -29,11 +29,11 @@ class CommentReplyController extends Controller
         return CommentReplyResource::collection($replies);
     }
 
-    public function commentReplies(int $commentId): AnonymousResourceCollection
+    public function commentReplies(Comment $comment): AnonymousResourceCollection
     {
         $this->authorize('viewAny', CommentReply::class);
 
-        $replies = CommentReply::where('comment_id', '=', $commentId)
+        $replies = CommentReply::where('comment_id', '=', $comment->id)
             ->with('user')
             ->oldest()
             ->paginate(5);
@@ -53,24 +53,21 @@ class CommentReplyController extends Controller
         return CommentReplyResource::collection($responses);
     }
 
-    public function store(CommentReplyRequest $request, int $commentId, int $parent_reply_id = null): CommentReplyResource
+    public function store(CommentReplyRequest $request, Comment $comment, int $parent_reply_id = null): CommentReplyResource
     {
-        $comment = Comment::findOrFail($commentId);
         $this->authorize('create', $comment);
 
         $reply = CommentReply::create($request->validated() + [
             'user_id' => auth()->id(),
-            'comment_id' => $commentId,
+            'comment_id' => $comment->id,
             'parent_reply_id' => $parent_reply_id ?? null
         ]);
 
         return new CommentReplyResource($reply);
     }
 
-    public function update(CommentReplyRequest $request, int $replyId): CommentReplyResource
+    public function update(CommentReplyRequest $request, CommentReply $reply): CommentReplyResource
     {
-        $reply = CommentReply::findOrFail($replyId);
-
         $this->authorize('update', $reply);
 
         $reply->update($request->validated());
@@ -78,10 +75,8 @@ class CommentReplyController extends Controller
         return new CommentReplyResource($reply);
     }
 
-    public function destroy(int $replyId): JsonResponse
+    public function destroy(CommentReply $reply): JsonResponse
     {
-        $reply = CommentReply::findOrFail($replyId);
-
         $this->authorize('destroy', $reply);
 
         $reply->delete();
