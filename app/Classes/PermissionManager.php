@@ -6,22 +6,16 @@ class PermissionManager
 {
     /**
      * List of basic permissions assigned to resources.
-     *
-     * @var array
      */
     private array $permissions;
 
     /**
      * List of permissions that have been filtered and organized.
-     *
-     * @var array
      */
     private array $filteredPermissions;
 
     /**
      * Special permissions that override the default permissions.
-     *
-     * @var array
      */
     private array $specialPermissions;
 
@@ -46,7 +40,6 @@ class PermissionManager
     /**
      * Builds the list of permissions by combining base permissions with special permissions.
      *
-     * @return array List of filtered permissions organized by resource.
      */
     private function buildPermissions(): array
     {
@@ -76,7 +69,6 @@ class PermissionManager
     /**
      * Gets the list of filtered permissions.
      *
-     * @return array List of permissions organized by resource.
      */
     public function get(): array
     {
@@ -87,7 +79,6 @@ class PermissionManager
      * Removes specific permissions from the current list of permissions.
      *
      * @param array $remove List of permissions to remove.
-     * @return self New instance with the updated permissions.
      */
     public function remove(array $remove): self
     {
@@ -109,7 +100,6 @@ class PermissionManager
      * Filters the current permissions to include only the specified ones.
      *
      * @param array $only List of permissions to retain.
-     * @return self New instance with the filtered permissions.
      */
     public function only(array $only): self
     {

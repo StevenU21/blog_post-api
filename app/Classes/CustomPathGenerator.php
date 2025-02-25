@@ -11,7 +11,6 @@ class CustomPathGenerator implements PathGenerator
      * Get the base path for the media file.
      *
      * @param Media $media The media instance.
-     * @return string The generated path.
      */
     public function getPath(Media $media): string
     {
@@ -26,7 +25,6 @@ class CustomPathGenerator implements PathGenerator
      * Get the path for conversions of the media file.
      *
      * @param Media $media The media instance.
-     * @return string The generated path for conversions.
      */
     public function getPathForConversions(Media $media): string
     {
@@ -37,7 +35,6 @@ class CustomPathGenerator implements PathGenerator
      * Get the path for responsive images of the media file.
      *
      * @param Media $media The media instance.
-     * @return string The generated path for responsive images.
      */
     public function getPathForResponsiveImages(Media $media): string
     {
