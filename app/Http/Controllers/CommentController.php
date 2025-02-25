@@ -20,6 +20,11 @@ class CommentController extends Controller
     {
         $this->authorize('viewAny', Comment::class);
 
+        $request->validate([
+            'order_by' => ['in:asc,desc'],
+            'per_page' => ['integer']
+        ]);
+
         $order_by = $request->get('order_by', 'asc');
         $per_page = $request->get('per_page', 10);
 

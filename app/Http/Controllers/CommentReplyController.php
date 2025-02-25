@@ -19,6 +19,11 @@ class CommentReplyController extends Controller
     {
         $this->authorize('viewAny', CommentReply::class);
 
+        $request->validate([
+            'order_by' => ['in:asc,desc'],
+            'per_page' => ['integer']
+        ]);
+        
         $per_page = $request->get('per_page', 10);
         $order_by = $request->get('order_by', 'asc');
 
