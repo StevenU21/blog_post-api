@@ -78,7 +78,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::apiResource('users', UserController::class);
 
         //Dashboard
-        Route::get('/dashboard/latest-posts', [DashboardController::class, 'getLatestPosts']);
+        Route::get('/dashboard/totals', [DashboardController::class, 'getTotals']);
+        Route::get('/dashboard/recent-users', [DashboardController::class, 'getRecentUsers']);
+        Route::get('/dashboard/recent-posts', [DashboardController::class, 'getRecentPosts']);
 
         // Permissions
         Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
@@ -88,3 +90,4 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     });
 });
 
+    
