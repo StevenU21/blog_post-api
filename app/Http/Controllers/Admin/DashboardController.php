@@ -51,4 +51,37 @@ class DashboardController extends Controller
 
         return UserResource::collection($recent_users);
     }
+
+    public function getTopAuthors(): JsonResponse
+    {
+        $top_authors = User::withCount('posts')
+            ->orderByDesc('posts_count')
+            ->with(['profile', 'roles'])
+            ->take(5)
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'name' => $user->name,
+                    'posts_count' => $user->posts_count
+                ];
+            });
+
+        return response()->json($top_authors);
+    }
+
+    public function getTopCategories(): JsonResponse
+    {
+        $top_categories = Category::withCount('posts')
+            ->orderByDesc('posts_count')
+            ->take(5)
+            ->get()
+            ->map(function ($category) {
+                return [
+                    'name' => $category->name,
+                    'posts_count' => $category->posts_count
+                ];
+            });
+
+        return response()->json($top_categories);
+    }
 }
