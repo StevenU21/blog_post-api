@@ -10,6 +10,7 @@ use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class DashboardController extends Controller
@@ -83,5 +84,49 @@ class DashboardController extends Controller
             });
 
         return response()->json($top_categories);
+    }
+
+    public function getUserTrends(Request $request): JsonResponse
+    {
+        $request->validate([
+            'filter' => ['in:month,week,date'],
+            'start_date' => ['date', 'before:today'],
+            'end_date' => ['date', 'after:start_date'],
+        ]);
+
+        $filter = $request->query('filter', 'month');
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
+
+        $query = User::query();
+
+        if ($startDate) {
+            $query->whereDate('created_at', '>=', $startDate);
+        }
+
+        if ($endDate) {
+            $query->whereDate('created_at', '<=', $endDate);
+        }
+
+        $users = match ($filter) {
+            'day' => $query->selectRaw("DATE(created_at) as date, COUNT(*) as count")
+                ->groupBy('date')
+                ->orderBy('date', 'asc')
+                ->get(),
+            'week' => $query->selectRaw("STRFTIME('%Y-%W', created_at) as week, COUNT(*) as count")
+                ->groupBy('week')
+                ->orderBy('week', 'asc')
+                ->get(),
+            'month' => $query->selectRaw("STRFTIME('%Y-%m', created_at) as month, COUNT(*) as count")
+                ->groupBy('month')
+                ->orderBy('month', 'asc')
+                ->get(),
+            default => $query->selectRaw("STRFTIME('%Y-%m', created_at) as month, COUNT(*) as count")
+                ->groupBy('month')
+                ->orderBy('month', 'asc')
+                ->get(),
+        };
+
+        return response()->json($users);
     }
 }
