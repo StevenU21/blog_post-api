@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -24,6 +25,7 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.reset');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+
     // Logout Route
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
@@ -74,6 +76,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
         //Manage User
         Route::apiResource('users', UserController::class);
+
+        //Dashboard
+        Route::get('/dashboard/latest-posts', [DashboardController::class, 'getLatestPosts']);
 
         // Permissions
         Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
