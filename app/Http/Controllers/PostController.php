@@ -24,6 +24,15 @@ class PostController extends Controller
     {
         $this->authorize('viewAny', Post::class);
 
+        $request->validate([
+            'sort_order' => ['in:asc,desc'],
+            'per_page' => ['integer'],
+            'page' => ['integer'],
+            'category' => ['exists:categories,id'],
+            'user' => ['exists:users,id'],
+            'tags' => ['exists:tags,id']
+        ]);
+
         if ($request->has('search')) {
             return $this->search($request);
         }
@@ -60,7 +69,7 @@ class PostController extends Controller
         }
 
         if ($request->has('sort_order')) {
-            $sort_order = $request->get('sort_order');
+            $sort_order = $request->get('sort_order', 'asc');
             $query->orderBy('created_at', $sort_order);
         }
 
