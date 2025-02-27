@@ -84,9 +84,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             Route::get('/recent-posts', [DashboardController::class, 'getRecentPosts']);
             Route::get('/top-authors', [DashboardController::class, 'getTopAuthors']);
             Route::get('/top-categories', [DashboardController::class, 'getTopCategories']);
+            Route::get('/top-posts', [DashboardController::class, 'getTopPosts']);
             Route::get('/new-users-date-range', [DashboardController::class, 'getNewUsersByDateRange']);
             Route::get('/new-users-by-filter', [DashboardController::class, 'getNewUsersByFilter']);
         });
+        
         // Permissions
         Route::prefix('permissions')->group(function () {
             Route::get('/', [PermissionController::class, 'index'])->name('permissions.index');

@@ -87,6 +87,15 @@ class DashboardController extends Controller
         return response()->json($top_categories);
     }
 
+    public function getTopPosts(): AnonymousResourceCollection
+    {
+        $top_posts = Post::orderBy('views', 'desc')
+            ->with('user', 'category', 'tags', 'media')
+            ->take(5)->get();
+
+        return PostResource::collection($top_posts);
+    }
+
     public function getNewUsersByDateRange(Request $request): JsonResponse
     {
         $request->validate([
