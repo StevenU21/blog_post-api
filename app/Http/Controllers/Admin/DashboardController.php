@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -86,46 +87,60 @@ class DashboardController extends Controller
         return response()->json($top_categories);
     }
 
-    public function getUserTrends(Request $request): JsonResponse
+    public function getNewUsersByDateRange(Request $request): JsonResponse
     {
         $request->validate([
-            'filter' => ['in:month,week,date'],
-            'start_date' => ['date', 'before:today'],
-            'end_date' => ['date', 'after:start_date'],
+            'start_date' => ['nullable', 'date', 'before:today'],
+            'end_date' => ['nullable', 'date', 'after:start_date']
         ]);
 
-        $filter = $request->query('filter', 'month');
-        $startDate = $request->query('start_date');
-        $endDate = $request->query('end_date');
+        $startDate = $request->query('start_date') ? Carbon::createFromFormat('Y-m-d', $request->query('start_date')) : null;
+        $endDate = $request->query('end_date') ? Carbon::createFromFormat('Y-m-d', $request->query('end_date')) : null;
 
         $query = User::query();
 
         if ($startDate) {
-            $query->whereDate('created_at', '>=', $startDate);
+            $query->where('created_at', '>=', $startDate);
         }
 
         if ($endDate) {
-            $query->whereDate('created_at', '<=', $endDate);
+            $query->where('created_at', '<=', $endDate);
         }
 
-        $users = match ($filter) {
-            'day' => $query->selectRaw("DATE(created_at) as date, COUNT(*) as count")
-                ->groupBy('date')
-                ->orderBy('date', 'asc')
-                ->get(),
-            'week' => $query->selectRaw("STRFTIME('%Y-%W', created_at) as week, COUNT(*) as count")
-                ->groupBy('week')
-                ->orderBy('week', 'asc')
-                ->get(),
-            'month' => $query->selectRaw("STRFTIME('%Y-%m', created_at) as month, COUNT(*) as count")
-                ->groupBy('month')
-                ->orderBy('month', 'asc')
-                ->get(),
-            default => $query->selectRaw("STRFTIME('%Y-%m', created_at) as month, COUNT(*) as count")
-                ->groupBy('month')
-                ->orderBy('month', 'asc')
-                ->get(),
+        $users = $query->count();
+
+        return response()->json($users);
+    }
+
+    public function getNewUsersByFilter(Request $request): JsonResponse
+    {
+        $request->validate([
+            'filter' => ['in:current_week,last_week,current_month,last_month']
+        ]);
+
+        $filter = $request->query('filter', 'current_week');
+
+        $filterDates = match ($filter) {
+            'current_week' => [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()],
+            'last_week' => [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()],
+            'current_month' => [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()],
+            'last_month' => [Carbon::now()->subMonth()->startOfMonth(), Carbon::now()->subMonth()->endOfMonth()],
+            default => [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()],
         };
+
+        [$startDate, $endDate] = $filterDates;
+
+        $query = User::query();
+
+        if ($startDate) {
+            $query->where('created_at', '>=', $startDate);
+        }
+
+        if ($endDate) {
+            $query->where('created_at', '<=', $endDate);
+        }
+
+        $users = $query->count();
 
         return response()->json($users);
     }
