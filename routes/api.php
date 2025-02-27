@@ -78,19 +78,21 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::apiResource('users', UserController::class);
 
         //Dashboard
-        Route::get('/dashboard/totals', [DashboardController::class, 'getTotals']);
-        Route::get('/dashboard/recent-users', [DashboardController::class, 'getRecentUsers']);
-        Route::get('/dashboard/recent-posts', [DashboardController::class, 'getRecentPosts']);
-        Route::get('/dashboard/top-authors', [DashboardController::class, 'getTopAuthors']);
-        Route::get('/dashboard/top-categories', [DashboardController::class, 'getTopCategories']);
-        Route::get('/dashboard/new-users-date-range', [DashboardController::class, 'getNewUsersByDateRange']);
-        Route::get('/dashboard/new-users-by-filter', [DashboardController::class, 'getNewUsersByFilter']);
-
+        Route::prefix('dashboard')->group(function () {
+            Route::get('/totals', [DashboardController::class, 'getTotals']);
+            Route::get('/recent-users', [DashboardController::class, 'getRecentUsers']);
+            Route::get('/recent-posts', [DashboardController::class, 'getRecentPosts']);
+            Route::get('/top-authors', [DashboardController::class, 'getTopAuthors']);
+            Route::get('/top-categories', [DashboardController::class, 'getTopCategories']);
+            Route::get('/new-users-date-range', [DashboardController::class, 'getNewUsersByDateRange']);
+            Route::get('/new-users-by-filter', [DashboardController::class, 'getNewUsersByFilter']);
+        });
         // Permissions
-        Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
-        Route::get('/permissions/{user}/list-permission', [PermissionController::class, 'getUserPermissions'])->name('permissions.listPermission');
-        Route::post('/permissions/{user}/give-permission', [PermissionController::class, 'assignPermission'])->name('permissions.givePermission');
-        Route::delete('/permissions/{user}/revoke-permission', [PermissionController::class, 'revokePermission'])->name('permissions.revokePermission');
+        Route::prefix('permissions')->group(function () {
+            Route::get('/', [PermissionController::class, 'index'])->name('permissions.index');
+            Route::get('/{user}/list-permission', [PermissionController::class, 'getUserPermissions'])->name('permissions.listPermission');
+            Route::post('/{user}/give-permission', [PermissionController::class, 'assignPermission'])->name('permissions.givePermission');
+            Route::delete('/{user}/revoke-permission', [PermissionController::class, 'revokePermission'])->name('permissions.revokePermission');
+        });
     });
 });
-
