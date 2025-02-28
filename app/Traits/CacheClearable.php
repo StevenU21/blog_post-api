@@ -17,10 +17,10 @@ trait CacheClearable
     public function clearCache()
     {
         if (method_exists($this, 'getCacheKey')) {
-            Log::info("Borrando caché de: " . $this->getCacheKey());
+            Log::info("clearing cache of: " . $this->getCacheKey());
             ResponseCache::forget($this->getCacheKey());
         } else {
-            Log::info("Borrando toda la caché");
+            Log::info("Cache was Clean");
             ResponseCache::clear();
         }
     }
