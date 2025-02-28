@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\CacheClearable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,7 +17,7 @@ use Spatie\Sluggable\SlugOptions;
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens, HasRoles, HasSlug;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles, HasSlug, CacheClearable;
 
     /**
      * The attributes that are mass assignable.

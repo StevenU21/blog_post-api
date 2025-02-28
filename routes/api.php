@@ -34,19 +34,19 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::apiResource('categories', CategoryController::class)->middlewareFor(['index', 'show'], 'cache.response');
 
     // Labels Routes
-    Route::get('/tags/{tag}/posts', [TagController::class, 'tagPosts'])->name('tags.post');
-    Route::apiResource('tags', TagController::class);
+    Route::get('/tags/{tag}/posts', [TagController::class, 'tagPosts'])->name('tags.post')->middleware('cache.response');
+    Route::apiResource('tags', TagController::class)->middlewareFor(['index', 'show'], 'cache.response');
 
     // Posts Routes
-    Route::get('/user/{user}/posts', [PostController::class, 'userPosts'])->name('posts.user');
-    Route::get('/user/posts', [PostController::class, 'authUserPosts'])->name('posts.auth.user');
+    Route::get('/user/{user}/posts', [PostController::class, 'userPosts'])->name('posts.user')->middleware('cache.response');
+    Route::get('/user/posts', [PostController::class, 'authUserPosts'])->name('posts.auth.user')->middleware('cache.response');
     Route::get('/posts/search', [PostController::class, 'search']);
     Route::apiResource('posts', PostController::class)->middlewareFor('show', 'track.views');
 
     // Comments Routes
     Route::prefix('/comments')->name('comments.')->group(function () {
-        Route::get('/', [CommentController::class, 'index'])->name('index');
-        Route::get('/post/{post}', [CommentController::class, 'postComments'])->name('post');
+        Route::get('/', [CommentController::class, 'index'])->name('index')->middleware('cache.response');
+        Route::get('/post/{post}', [CommentController::class, 'postComments'])->name('post')->middleware('cache.response');
         Route::post('/post/{post}', [CommentController::class, 'store'])->name('post.store');
         Route::put('/{comment}', [CommentController::class, 'update'])->name('update');
         Route::delete('/{comment}', [CommentController::class, 'destroy'])->name('destroy');
@@ -54,9 +54,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     // Replies Routes
     Route::prefix('/replies')->name('comments.')->group(function () {
-        Route::get('/', [CommentReplyController::class, 'index']);
-        Route::get('/comments/{comment}', [CommentReplyController::class, 'commentReplies']);
-        Route::get('/{reply}/response', [CommentReplyController::class, 'replyResponses']);
+        Route::get('/', [CommentReplyController::class, 'index'])->middleware('cache.response');
+        Route::get('/comments/{comment}', [CommentReplyController::class, 'commentReplies'])->middleware('cache.response');
+        Route::get('/{reply}/response', [CommentReplyController::class, 'replyResponses'])->middleware('cache.response');
         Route::post('/comment/{comment}/reply/{parent_reply?}', [CommentReplyController::class, 'store']);
         Route::put('/{reply}/update', [CommentReplyController::class, 'update']);
         Route::delete('/{reply}/destroy', [CommentReplyController::class, 'destroy']);
@@ -78,7 +78,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::apiResource('users', UserController::class);
 
         //Dashboard
-        Route::prefix('dashboard')->group(function () {
+        Route::middleware('cache.response')->prefix('dashboard')->group(function () {
             Route::get('/totals', [DashboardController::class, 'getTotals']);
             Route::get('/recent-users', [DashboardController::class, 'getRecentUsers']);
             Route::get('/recent-posts', [DashboardController::class, 'getRecentPosts']);
