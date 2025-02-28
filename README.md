@@ -1,234 +1,152 @@
-# Blog Post API en Laravel 12
-
-Una API para gestionar un sistema de blog personal que incluye funcionalidades de autenticación, gestión de categorías, etiquetas, publicaciones, comentarios y administración de usuarios, con control de roles y permisos.
-
-## Tabla de Contenidos
-
-- [Descripción](#descripción)
-- [Requisitos](#requisitos)
-- [Instalación](#instalación)
-- [Configuración](#configuración)
-- [Rutas de la API](#rutas-de-la-api)
-  - [Autenticación](#autenticación)
-  - [Categorías](#categorías)
-  - [Etiquetas](#etiquetas)
-  - [Publicaciones](#publicaciones)
-  - [Comentarios](#comentarios)
-  - [Usuarios](#usuarios)
-  - [Administración (Admin)](#administración-admin)
-- [Roles y Permisos](#roles-y-permisos)
-- [Ejemplos de Uso](#ejemplos-de-uso)
-- [Seguridad](#seguridad)
-- [Licencia](#licencia)
-- [Contacto](#contacto)
+# Blog API - Documentación Completa
 
 ## Descripción
 
-Esta API permite gestionar un blog personal mediante Laravel 11. Utiliza Laravel Sanctum para la autenticación por tokens y maneja la autorización a través de roles y permisos, definiendo tres roles principales:
+Esta API proporciona las funcionalidades necesarias para gestionar un sistema de blogs, permitiendo a los usuarios registrar cuentas, autenticar, crear y administrar publicaciones, categorías, etiquetas, comentarios y respuestas. Además, incluye un sistema de roles y permisos para la administración de usuarios.
 
-- **admin:** Acceso total a la aplicación.
-- **writer:** Acceso a la creación y edición de publicaciones, comentarios y gestión parcial de categorías y etiquetas.
-- **reader:** Acceso limitado a la lectura de contenidos y gestión de comentarios.
+## Tecnologías Utilizadas
 
-## Requisitos
+- **PHP** ^8.2
+- **Laravel Framework** ^12.0
+- **Laravel Sanctum** (Autenticación)
+- **Algolia Search** (Búsqueda)
+- **Laravel Scout**
+- **Laravel Tinker**
+- **Predis** (Redis para caché)
+- **Spatie MediaLibrary** (Gestor de medios)
+- **Spatie Permission** (Gestor de permisos y roles)
+- **Spatie ResponseCache** (Caché de respuestas)
+- **Spatie Sluggable** (URLs amigables)
 
-- PHP 8.2 >
-- Composer
-- Laravel 12
-- BD (MySQL, SQLite)
+## Autenticación
 
-## Instalación
+La API utiliza **Laravel Sanctum** para la autenticación de usuarios, incluyendo verificación de correo electrónico y restablecimiento de contraseña.
 
-1. **Clonar el repositorio:**
-   ```bash
-   git clone https://github.com/StevenU21/blog-post-api.git
-   ```
+### Rutas de Autenticación
 
-   ```bash
-   cd blog-post-api
-   ```
-2. **Instalar dependencias:**
-   ```bash
-   composer install
-   ```
-3. **Configurar el archivo `.env`:**
-   ```bash
-   cp .env.example .env
-   ```
-5. **Ejecutar migraciones y seeders:**
-   ```bash
-   php artisan migrate
-   ```
+- `POST /register` - Registrar un nuevo usuario
+- `POST /login` - Iniciar sesión
+- `POST /logout` - Cerrar sesión (requiere autenticación)
+- `POST /email/verify/{id}/{hash}` - Verificar correo electrónico
+- `POST /email/resend` - Reenviar verificación de correo
+- `POST /forgot-password` - Solicitar restablecimiento de contraseña
+- `POST /reset-password` - Restablecer contraseña
 
-    ```bash
-   php artisan db:seed
-   ```
-6. **Instalar y configurar Laravel Sanctum:**
-   ```bash
-   php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
-   ```
-7. **Generar la clave de la aplicación:**
-   ```bash
-   php artisan key:generate
-   ```
-
-## Configuración
-
-La aplicación utiliza un sistema de roles y permisos para restringir el acceso a ciertas rutas. En el método `assignPermissionsToRoles` se definen las asignaciones de permisos para cada rol.  
-Por ejemplo:
-
-```php
-protected function assignPermissionsToRoles(): void
-{
-    $adminRole = Role::firstOrCreate(['name' => 'admin']);
-    $writerRole = Role::firstOrCreate(['name' => 'writer']);
-    $readerRole = Role::firstOrCreate(['name' => 'reader']);
-
-    $adminRole->givePermissionTo(Permission::all());
-
-    $writerPermissions = array_merge(
-        $this->filterPermissions('categories')->only(['read categories'])->get(),
-        $this->filterPermissions('labels')->remove(['destroy labels'])->get(),
-        $this->filterPermissions('posts')->get(),
-        $this->filterPermissions('comments')->get()
-    );
-
-    $writerRole->givePermissionTo($writerPermissions);
-
-    $readerPermissions = array_merge(
-        $this->filterPermissions('categories')->only(['read categories'])->get(),
-        $this->filterPermissions('labels')->only(['read labels'])->get(),
-        $this->filterPermissions('posts')->only(['read posts'])->get(),
-        $this->filterPermissions('comments')->get()
-    );
-
-    $readerRole->givePermissionTo($readerPermissions);
-}
-```
-
-## Rutas de la API
-
-### Autenticación
-
-- **Registro de usuario:**  
-  `POST /register`  
-  Ruta: `Route::post('/register', [RegisterController::class, 'register'])->name('register');`
-
-- **Login:**  
-  `POST /login`  
-  Ruta: `Route::post('/login', [LoginController::class, 'login'])->name('login');`
-
-- **Logout:**  
-  `POST /logout`  
-  Ruta: `Route::post('/logout', [LoginController::class, 'logout'])->name('logout');`  
-  *Protegida por middleware `auth:sanctum`.*
+## Endpoints de la API
 
 ### Categorías
 
-- **CRUD completo de categorías:**  
-  `Route::apiResource('categories', CategoryController::class);`
+- `GET /categories` - Obtener todas las categorías
+- `GET /categories/{id}` - Obtener una categoría por ID
+- `POST /categories` - Crear una nueva categoría
+- `PUT /categories/{id}` - Actualizar una categoría
+- `DELETE /categories/{id}` - Eliminar una categoría
 
-### Etiquetas
+### Etiquetas (Tags)
 
-- **Listado de etiquetas y CRUD:**  
-  `Route::apiResource('labels', LabelController::class);`
-- **Obtener publicaciones por etiqueta:**  
-  `GET /labels/{label}/posts`  
-  Ruta: `Route::get('/labels/{label}/posts', [LabelController::class, 'label_posts'])->name('labels.post');`
+- `GET /tags` - Obtener todas las etiquetas
+- `GET /tags/{id}` - Obtener una etiqueta por ID
+- `POST /tags` - Crear una nueva etiqueta
+- `PUT /tags/{id}` - Actualizar una etiqueta
+- `DELETE /tags/{id}` - Eliminar una etiqueta
 
-### Publicaciones
+### Publicaciones (Posts)
 
-- **Listado de publicaciones del usuario autenticado:**  
-  `GET /posts/user`  
-  Ruta: `Route::get('/posts/user', [PostController::class, 'own_posts'])->name('posts.user');`
-- **CRUD completo de publicaciones:**  
-  `Route::apiResource('posts', PostController::class);`
+- `GET /posts` - Obtener todas las publicaciones
+- `GET /posts/{id}` - Obtener una publicación por ID
+- `POST /posts` - Crear una nueva publicación
+- `PUT /posts/{id}` - Actualizar una publicación
+- `DELETE /posts/{id}` - Eliminar una publicación
+- `GET /user/{user}/posts` - Obtener publicaciones de un usuario
+- `GET /posts/search` - Buscar publicaciones
 
 ### Comentarios
 
-Las rutas de comentarios se agrupan bajo el prefijo `/comments`:
+- `GET /comments` - Obtener todos los comentarios
+- `GET /comments/post/{post}` - Obtener comentarios de un post
+- `POST /comments/post/{post}` - Agregar un comentario
+- `PUT /comments/{comment}` - Actualizar un comentario
+- `DELETE /comments/{comment}` - Eliminar un comentario
 
-- **Listar comentarios:**  
-  `GET /comments`  
-  Ruta: `Route::get('/', [CommentController::class, 'index'])->name('comments.index');`
-- **Obtener comentarios de una publicación:**  
-  `GET /comments/post/{post}`  
-  Ruta: `Route::get('/post/{post}', [CommentController::class, 'post_comments'])->name('comments.post');`
-- **Crear un comentario en una publicación:**  
-  `POST /comments/post/{post}`  
-  Ruta: `Route::post('/post/{post}', [CommentController::class, 'store'])->name('comments.post.store');`
-- **Actualizar un comentario:**  
-  `PUT /comments/{comment}`  
-  Ruta: `Route::put('/{comment}', [CommentController::class, 'update'])->name('comments.update');`
-- **Eliminar un comentario:**  
-  `DELETE /comments/{comment}`  
-  Ruta: `Route::delete('/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');`
+### Respuestas a Comentarios
 
-### Usuarios
+- `GET /replies` - Obtener todas las respuestas
+- `GET /replies/comments/{comment}` - Obtener respuestas de un comentario
+- `POST /replies/comment/{comment}/reply/{parent_reply?}` - Responder a un comentario
+- `PUT /replies/{reply}/update` - Actualizar una respuesta
+- `DELETE /replies/{reply}/destroy` - Eliminar una respuesta
 
-- **Listar usuarios:**  
-  `GET /users`  
-  Ruta: `Route::get('/users', [UserController::class, 'index'])->name('users.index');`
+### Perfil de Usuario
 
-### Administración (Solo para Admin)
+- `GET /profile/users/index` - Ver perfil del usuario autenticado
+- `PUT /profile/update` - Actualizar perfil
+- `PUT /profile/password` - Cambiar contraseña
 
-Rutas agrupadas bajo `/admin` y protegidas con el middleware `role:admin`:
+### Administración
 
-- **Roles:**
-  - Listar roles:  
-    `GET /admin/roles`  
-    Ruta: `Route::get('/roles', [RoleController::class, 'index'])->name('admin.index');`
-  - Asignar rol a un usuario:  
-    `PUT /admin/roles/{user}/assign-role`  
-    Ruta: `Route::put('/roles/{user}/assign-role', [RoleController::class, 'assignRole'])->name('admin.assign-role');`
-  
-- **Permisos:**
-  - Listar permisos:  
-    `GET /admin/permissions`  
-    Ruta: `Route::get('/permissions', [PermissionController::class, 'index'])->name('admin.permissions.index');`
-  - Obtener permisos de un usuario:  
-    `GET /admin/permissions/{user}/list-permission`  
-    Ruta: `Route::get('/permissions/{user}/list-permission', [PermissionController::class, 'getUserPermissions'])->name('admin.permissions.list-permission');`
-  - Asignar permiso a un usuario:  
-    `POST /admin/permissions/{user}/give-permission`  
-    Ruta: `Route::post('/permissions/{user}/give-permission', [PermissionController::class, 'assignPermission'])->name('admin.permissions.give-permission');`
-  - Revocar permiso a un usuario:  
-    `DELETE /admin/permissions/{user}/revoke-permission`  
-    Ruta: `Route::delete('/permissions/{user}/revoke-permission', [PermissionController::class, 'revokePermission'])->name('admin.permissions.revoke-permission');`
+#### Usuarios
 
-## Roles y Permisos
+- `GET /admin/users` - Obtener todos los usuarios
+- `POST /admin/users` - Crear usuario
+- `PUT /admin/users/{id}` - Actualizar usuario
+- `DELETE /admin/users/{id}` - Eliminar usuario
 
-El sistema de roles y permisos se gestiona mediante la asignación de permisos específicos a cada rol:
+#### Roles y Permisos
 
-- **Admin:** Permisos totales.
-- **Writer:** Permisos para crear, leer, actualizar y eliminar (con excepciones, como no poder eliminar etiquetas).
-- **Reader:** Permisos limitados a la lectura y a gestionar comentarios.
+- `GET /admin/roles` - Obtener roles
+- `GET /admin/permissions` - Obtener permisos
+- `POST /admin/permissions/{user}/give-permission` - Asignar permiso
+- `DELETE /admin/permissions/{user}/revoke-permission` - Revocar permiso
 
-La asignación se realiza a través del método `assignPermissionsToRoles()` que se encarga de filtrar y asignar los permisos necesarios.
+#### Dashboard (Estadísticas)
 
-## Ejemplos de Uso
+- `GET /admin/dashboard/totals` - Totales generales
+- `GET /admin/dashboard/recent-users` - Usuarios recientes
+- `GET /admin/dashboard/recent-posts` - Publicaciones recientes
+- `GET /admin/dashboard/top-authors` - Mejores autores
+- `GET /admin/dashboard/top-categories` - Categorías populares
+- `GET /admin/dashboard/top-posts` - Publicaciones populares
 
-### Registro y Login
+## Políticas de Seguridad
 
-1. **Registro:**  
-   Envía una solicitud `POST` a `/register` con los datos del usuario (nombre, email, password, etc.).
-2. **Login:**  
-   Envía una solicitud `POST` a `/login` con `email` y `password`. Al autenticarse, recibirás un token de autenticación que debes enviar en los encabezados en solicitudes posteriores:
-   ```http
-   Authorization: Bearer {token}
+Se han definido las siguientes **policies** para garantizar la seguridad y control de acceso:
+
+- **CategoryPolicy**
+- **CommentPolicy**
+- **CommentReplyPolicy**
+- **PermissionPolicy**
+- **PostPolicy**
+- **ProfilePolicy**
+- **RolePolicy**
+- **TagPolicy**
+- **UserPolicy**
+
+## Instalación y Configuración
+
+1. Clonar el repositorio:
+   ```sh
+   https://github.com/StevenU21/blog_post-api-backend.git
+   cd blog_post-api-backend
    ```
 
-### Gestión de Publicaciones
+   ```sh
+   cd blog_post-api-backend
+   ```
+2. Instalar dependencias:
+   ```sh
+   composer install
+   ```
+3. Configurar variables de entorno:
+   ```sh
+   cp .env.example .env
+   php artisan key:generate
+   ```
+4. Migrar base de datos:
+   ```sh
+   php artisan migrate --seed
+   ```
+5. Levantar el servidor:
+   ```sh
+   php artisan serve
+   ```
 
-- **Crear publicación:**  
-  Envía una solicitud `POST` a `/posts` con el título, contenido, y otros campos requeridos.
-- **Obtener publicaciones propias:**  
-  Envía una solicitud `GET` a `/posts/user` para ver las publicaciones del usuario autenticado.
-
-## Seguridad
-
-- **Autenticación:** Utiliza Laravel Sanctum para la gestión de tokens.
-- **Protección de rutas:**  
-  Las rutas críticas se protegen con el middleware `auth:sanctum` y, en caso de rutas administrativas, con `role:admin`.
-- **Roles y permisos:**  
-  Revisa y ajusta las asignaciones de permisos según los requerimientos de tu aplicación para garantizar un acceso controlado.
