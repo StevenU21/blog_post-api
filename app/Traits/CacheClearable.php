@@ -8,16 +8,21 @@ trait CacheClearable
 {
     public static function bootClearsResponseCache()
     {
-        self::created(function () {
-            ResponseCache::clear();
+        self::created(function ($model) {
+            ResponseCache::forget($model->getCacheKey());
         });
 
-        self::updated(function () {
-            ResponseCache::clear();
+        self::updated(function ($model) {
+            ResponseCache::forget($model->getCacheKey());
         });
 
-        self::deleted(function () {
-            ResponseCache::clear();
+        self::deleted(function ($model) {
+            ResponseCache::forget($model->getCacheKey());
         });
+    }
+
+    public function getCacheKey()
+    {
+        return strtolower(class_basename($this)) . '.' . $this->id;
     }
 }
