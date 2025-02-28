@@ -3,26 +3,25 @@
 namespace App\Traits;
 
 use Spatie\ResponseCache\Facades\ResponseCache;
+use Illuminate\Support\Facades\Log;
 
 trait CacheClearable
 {
-    public static function bootClearsResponseCache()
+    public static function bootCacheClearable()
     {
-        self::created(function ($model) {
-            ResponseCache::forget($model->getCacheKey());
-        });
-
-        self::updated(function ($model) {
-            ResponseCache::forget($model->getCacheKey());
-        });
-
-        self::deleted(function ($model) {
-            ResponseCache::forget($model->getCacheKey());
-        });
+        static::created(fn($model) => $model->clearCache());
+        static::updated(fn($model) => $model->clearCache());
+        static::deleted(fn($model) => $model->clearCache());
     }
 
-    public function getCacheKey()
+    public function clearCache()
     {
-        return strtolower(class_basename($this)) . '.' . $this->id;
+        if (method_exists($this, 'getCacheKey')) {
+            Log::info("Borrando caché de: " . $this->getCacheKey());
+            ResponseCache::forget($this->getCacheKey());
+        } else {
+            Log::info("Borrando toda la caché");
+            ResponseCache::clear();
+        }
     }
 }

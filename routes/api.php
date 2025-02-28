@@ -30,8 +30,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     // Categories Routes
-    Route::get('/categories/{category}/posts', [CategoryController::class, 'categoryPosts'])->name('categories.post');
-    Route::apiResource('categories', CategoryController::class);
+    Route::get('/categories/{category}/posts', [CategoryController::class, 'categoryPosts'])->middleware('cache.response');
+    Route::apiResource('categories', CategoryController::class)->middlewareFor(['index', 'show'], 'cache.response');
 
     // Labels Routes
     Route::get('/tags/{tag}/posts', [TagController::class, 'tagPosts'])->name('tags.post');
@@ -88,7 +88,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             Route::get('/new-users-date-range', [DashboardController::class, 'getNewUsersByDateRange']);
             Route::get('/new-users-by-filter', [DashboardController::class, 'getNewUsersByFilter']);
         });
-        
+
         // Permissions
         Route::prefix('permissions')->group(function () {
             Route::get('/', [PermissionController::class, 'index'])->name('permissions.index');

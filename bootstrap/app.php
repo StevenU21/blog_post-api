@@ -16,9 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->web(append: [
-            \Spatie\ResponseCache\Middlewares\CacheResponse::class,
-        ]);
+        // $middleware->api(append: [
+        //     \Spatie\ResponseCache\Middlewares\CacheResponse::class,
+        // ]);
 
         $middleware->alias([
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
@@ -26,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
             'track.views' => \App\Http\Middleware\TrackViewsMiddleware::class,
+            'cache.response' => \Spatie\ResponseCache\Middlewares\CacheResponse::class,
             'doNotCacheResponse' => \Spatie\ResponseCache\Middlewares\DoNotCacheResponse::class,
         ]);
     })
