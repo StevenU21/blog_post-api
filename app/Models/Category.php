@@ -25,11 +25,6 @@ class Category extends Model
             ->doNotGenerateSlugsOnUpdate();
     }
 
-    public function getCacheKey(): string
-    {
-        return "/categories/{$this->category}";
-    }
-
     public function resolveRouteBinding($value, $field = null)
     {
         return $this->where($field ?? 'id', $value)->orWhere('slug', $value)->firstOrFail();

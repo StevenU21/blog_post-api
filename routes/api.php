@@ -41,7 +41,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/user/{user}/posts', [PostController::class, 'userPosts'])->name('posts.user')->middleware('cache.response');
     Route::get('/user/posts', [PostController::class, 'authUserPosts'])->name('posts.auth.user')->middleware('cache.response');
     Route::get('/posts/search', [PostController::class, 'search']);
-    Route::apiResource('posts', PostController::class)->middlewareFor('show', 'track.views');
+    Route::get('/posts/{post}', [PostController::class, 'show'])->middleware('track.views');
+    Route::apiResource('posts', PostController::class)->middlewareFor('index', 'cache.response');
 
     // Comments Routes
     Route::prefix('/comments')->name('comments.')->group(function () {
