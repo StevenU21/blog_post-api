@@ -21,6 +21,11 @@ class CategoryController extends Controller
     {
         $this->authorize('viewAny', Category::class);
 
+        $request->validate([
+            'per_page' => ['integer', 'min:1'],
+            'page' => ['integer', 'min:1'],
+        ]);
+
         $per_page = $request->get('per_page', 10);
         $categories = Category::latest()->paginate($per_page);
 

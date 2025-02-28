@@ -102,6 +102,10 @@ class PostController extends Controller
     {
         $this->authorize('viewAny', Post::class);
 
+        $request->validate([
+            'per_page' => ['integer']
+        ]);
+
         $per_page = $request->get('per_page', 5);
 
         $posts = $user->posts()->where('status', 'published')
@@ -114,6 +118,11 @@ class PostController extends Controller
     public function authUserPosts(Request $request): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Post::class);
+
+        $request->validate([
+            'per_page' => ['integer'],
+            'published' => ['in:draft,published,scheduled']
+        ]);
 
         $per_page = $request->get('per_page', 10);
         $status = $request->get('status', 'published');
