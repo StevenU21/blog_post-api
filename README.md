@@ -2,7 +2,7 @@
 
 ## Descripción
 
-Esta API proporciona las funcionalidades necesarias para gestionar un sistema de blogs, permitiendo a los usuarios registrar cuentas, autenticar, crear y administrar publicaciones, categorías, etiquetas, comentarios y respuestas. Además, incluye un sistema de roles y permisos para la administración de usuarios.
+Esta API REST proporciona las funcionalidades necesarias para gestionar un sistema de blogs, permitiendo a los usuarios registrar cuentas, autenticar, crear y administrar publicaciones, categorías, etiquetas, comentarios y respuestas. Además, incluye un sistema de roles y permisos para la administración de usuarios.
 
 ## Tecnologías Utilizadas
 
